@@ -92,8 +92,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    // set intake roller speeds
     if(driver.A.isPressed()) {
       intake.runIntake(IntakeConstants.rollerSpeed);
+    }
+    else{
+      intake.runIntake(0);
     }
   }
 
