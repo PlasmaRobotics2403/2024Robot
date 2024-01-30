@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.Intake;
 
 
 
