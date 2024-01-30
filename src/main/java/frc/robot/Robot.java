@@ -7,6 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.controllers.PlasmaJoystick;
+import frc.robot.Constants.IntakeConstants;
+
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -15,6 +19,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  // subsystems
+  Intake intake = new Intake();
+
+  PlasmaJoystick driver = new PlasmaJoystick(Constants.RobotConstants.driverJoystickID);
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -39,7 +49,10 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    intake.logging();
+    
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -78,7 +91,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if(driver.A.isPressed()) {
+      intake.runIntake(IntakeConstants.rollerSpeed);
+    }
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
