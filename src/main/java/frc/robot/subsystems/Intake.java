@@ -4,9 +4,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
-public class Intake {
+public class Intake extends SubsystemBase{
     
     private CANSparkMax roller;
 
@@ -14,7 +15,9 @@ public class Intake {
      * constructor for intake
      */
     public Intake() {
+        // roller config
         roller = new CANSparkMax(IntakeConstants.rollerID, MotorType.kBrushless);
+        roller.setInverted(true);
     }
 
     /**
@@ -24,6 +27,10 @@ public class Intake {
         roller.set(speed);
     }
 
+    /**
+     * periodiclly logs information to
+     * smartdashboard
+     */
     public void logging() {
         SmartDashboard.putNumber("Roller Speed", roller.get());
     }
