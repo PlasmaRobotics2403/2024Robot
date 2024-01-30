@@ -9,8 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.Intake;
 
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Swerve;
 
 
 /**
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
 
   // subsystems
   Intake intake = new Intake();
+  Swerve swerve = new Swerve();
 
   PlasmaJoystick driver = new PlasmaJoystick(Constants.RobotConstants.driverJoystickID);
 
@@ -51,8 +53,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    intake.logging();
-    
+    intake.periodic();
+    swerve.periodic();
   }
 
   /**
@@ -93,6 +95,25 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    // swerve drive controls
+    if (driver.Y.isPressed()) {
+      swerve.resetHeading();
+    }
+    else if (driver.X.isPressed()) {
+      swerve.swerveBrake();
+    }
+    else if (driver.B.isPressed()) {
+      swerve.swervePoint(driver.LeftY.getFilteredAxis(),
+                         driver.LeftX.getFilteredAxis()
+      );
+    }
+    else {
+      swerve.swerveFieldCentric(driver.LeftY.getFilteredAxis(),
+                                driver.LeftX.getFilteredAxis(),
+                                driver.RightX.getFilteredAxis());
+    }
+
+    // intake controls
     if(driver.A.isPressed()) {
       intake.runIntake(IntakeConstants.rollerSpeed);
     }

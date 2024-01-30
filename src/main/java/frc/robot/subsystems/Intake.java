@@ -24,7 +24,15 @@ public class Intake {
         roller.set(speed);
     }
 
-    public void logging() {
+    private void logging() {
         SmartDashboard.putNumber("Roller Speed", roller.get());
+    }
+
+     /**
+     * goes in robot periodic to trigger any
+     * important updates.
+     */
+    public void periodic() {
+        logging();
     }
 }
