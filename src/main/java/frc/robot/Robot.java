@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    intake.logging();
+    intake.periodic();
   }
 
   /**
@@ -95,10 +95,13 @@ public class Robot extends TimedRobot {
 
     // set intake roller speeds
     if(driver.A.isPressed()) {
-      intake.runIntake(IntakeConstants.rollerSpeed);
+      intake.setState(Intake.intakeState.INTJECT);
+    }
+    else if(driver.B.isPressed()) {
+      intake.setState(Intake.intakeState.EJECT);
     }
     else{
-      intake.runIntake(0);
+      intake.setState(Intake.intakeState.STOW);
     }
   }
 
