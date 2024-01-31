@@ -13,6 +13,7 @@ public class Constants {
     public class ClimbConstants {
     
         public static final int climbMotorID = 1;
+        public static final double climbSpeed = 0.1;
     }
 
     public class RobotConstants {

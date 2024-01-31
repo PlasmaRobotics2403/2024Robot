@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 
 
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
 
   // subsystems
   Intake intake = new Intake();
+  Climb climb = new Climb();
 
   PlasmaJoystick driver = new PlasmaJoystick(Constants.RobotConstants.driverJoystickID);
 
@@ -52,6 +54,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     intake.periodic();
+    climb.periodic();
   }
 
   /**
@@ -102,6 +105,17 @@ public class Robot extends TimedRobot {
     }
     else{
       intake.setState(Intake.intakeState.STOW);
+    }
+
+    // setting controls for climb
+    if(driver.dPad.getPOV() == 0) {
+      climb.setState(Climb.climbState.UP);
+    }
+    else if(driver.dPad.getPOV() == 180) {
+      climb.setState(Climb.climbState.DOWN);
+    }
+    else{
+        climb.setState(Climb.climbState.NOTMOVING);
     }
   }
 
