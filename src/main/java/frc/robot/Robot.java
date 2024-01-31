@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.Intake;
 
 
 
@@ -50,8 +51,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    intake.logging();
-    
+    intake.periodic();
   }
 
   /**
@@ -92,8 +92,16 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    // set intake roller speeds
     if(driver.A.isPressed()) {
-      intake.runIntake(IntakeConstants.rollerSpeed);
+      intake.setState(Intake.intakeState.INTJECT);
+    }
+    else if(driver.B.isPressed()) {
+      intake.setState(Intake.intakeState.EJECT);
+    }
+    else{
+      intake.setState(Intake.intakeState.STOW);
     }
   }
 
