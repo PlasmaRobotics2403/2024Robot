@@ -34,7 +34,7 @@ public class Shooter {
      * @param speed
      */
     public void runShooter(double speed) {
-        shooterMotor1.set(-speed);
+        shooterMotor1.set(speed);
         shooterMotor2.set(speed);
     }
 
