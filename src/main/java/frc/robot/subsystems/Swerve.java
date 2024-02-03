@@ -7,7 +7,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.SwerveConstants;
-import frc.java.generated.TunerConstants;
+import frc.robot.generated.TunerConstants;
 
 public class Swerve {
     private SwerveDrivetrain drivetrain;
@@ -25,11 +25,11 @@ public class Swerve {
      */
     public Swerve() {
         drivetrain = new SwerveDrivetrain(
-            SwerveConstants.DrivetrainConstants,
-            SwerveConstants.FrontLeft,
-            SwerveConstants.FrontRight,
-            SwerveConstants.BackLeft,
-            SwerveConstants.BackRight
+            TunerConstants.DrivetrainConstants,
+            TunerConstants.FrontLeft,
+            TunerConstants.FrontRight,
+            TunerConstants.BackLeft,
+            TunerConstants.BackRight
         );
     }
 
