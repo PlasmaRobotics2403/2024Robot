@@ -11,6 +11,8 @@ import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shooter.shooterState;
 
 
 
@@ -25,6 +27,7 @@ public class Robot extends TimedRobot {
   // subsystems
   Intake intake = new Intake();
   Climb climb = new Climb();
+  Shooter shooter = new Shooter();
 
   PlasmaJoystick driver = new PlasmaJoystick(Constants.RobotConstants.driverJoystickID);
 
@@ -55,6 +58,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     intake.periodic();
     climb.periodic();
+    shooter.periodic();
   }
 
   /**
@@ -116,6 +120,14 @@ public class Robot extends TimedRobot {
     }
     else{
         climb.setState(Climb.climbState.NOTMOVING);
+    }
+
+    //setting up controls for shooter
+    if(driver.LB.isPressed()) {
+      shooter.setState(Shooter.shooterState.ON);
+    }
+    else {
+      shooter.setState(Shooter.shooterState.OFF);
     }
   }
 

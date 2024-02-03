@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase{
      * smartdashboard
      */
     public void logging() {
-        SmartDashboard.putNumber("Roller Speed", roller.get());
+        SmartDashboard.putNumber("Intake Roller Speed", roller.get());
     }
 
     /**
@@ -55,7 +55,7 @@ public class Intake extends SubsystemBase{
     }
     /**
      * gets the current intake state
-     * @return
+     * @return currentState
      */
     public intakeState getState() {
         return currentState;

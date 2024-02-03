@@ -17,6 +17,14 @@ public class Constants {
     }
 
     public class RobotConstants {
+
         public static final int driverJoystickID = 0;
+    }
+
+    public class ShooterConstants {
+
+        public static final int shooterMotor1ID = 2;
+        public static final int shooterMotor2ID = 3;
+        public static final double shooterSpeed = 0.5;
     }
 }

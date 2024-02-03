@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimbConstants;;
 
 public class Climb {
@@ -37,7 +39,7 @@ public class Climb {
     }
     /**
      * gets the current intake state
-     * @return
+     * @return currentState
      */
     public climbState getState() {
         return currentState;
@@ -45,7 +47,7 @@ public class Climb {
 
 
     public void logging() {
-        climbMotor.get();
+        SmartDashboard.putNumber("Climb Speed", climbMotor.get());
     }
 
     public void periodic() {
