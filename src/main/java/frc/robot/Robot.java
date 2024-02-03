@@ -8,9 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.controllers.PlasmaJoystick;
-import frc.robot.Constants.IntakeConstants;
 
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 
 
@@ -23,7 +21,6 @@ import frc.robot.subsystems.Swerve;
 public class Robot extends TimedRobot {
 
   // subsystems
-  Intake intake = new Intake();
   Swerve swerve = new Swerve();
 
   PlasmaJoystick driver = new PlasmaJoystick(Constants.RobotConstants.driverJoystickID);
@@ -53,7 +50,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    intake.periodic();
     swerve.periodic();
   }
 
@@ -113,10 +109,6 @@ public class Robot extends TimedRobot {
                                 driver.RightX.getFilteredAxis());
     }
 
-    // intake controls
-    if(driver.A.isPressed()) {
-      intake.runIntake(IntakeConstants.rollerSpeed);
-    }
   }
 
   /** This function is called once when the robot is disabled. */
