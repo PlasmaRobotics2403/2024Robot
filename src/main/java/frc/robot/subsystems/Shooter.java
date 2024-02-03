@@ -6,8 +6,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.Climb.climbState;;
+import frc.robot.Constants.ShooterConstants;;
 
 public class Shooter {
     private CANSparkMax shooterMotor1;
