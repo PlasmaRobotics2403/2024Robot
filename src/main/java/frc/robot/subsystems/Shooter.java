@@ -11,11 +11,13 @@ import frc.robot.Constants.ShooterConstants;;
 public class Shooter {
     private CANSparkMax shooterMotor1;
     private CANSparkMax shooterMotor2;
+    private CANSparkMax ampMotor;
 
     private shooterState currentState;
     public enum shooterState {
         ON,
-        OFF
+        OFF,
+        AMP
     }
 
     /**
@@ -25,8 +27,14 @@ public class Shooter {
 
         shooterMotor1 = new CANSparkMax(ShooterConstants.shooterMotor1ID, MotorType.kBrushless);
         shooterMotor2 = new CANSparkMax(ShooterConstants.shooterMotor2ID, MotorType.kBrushless);
+        ampMotor = new CANSparkMax(ShooterConstants.ampMotorID, MotorType.kBrushless);
+
 
         currentState = shooterState.OFF;
+    }
+
+    public void runAmp(double speed) {
+        ampMotor.set(speed);
     }
 
     /**
@@ -63,6 +71,10 @@ public class Shooter {
         switch (currentState) {
             case ON:
                 runShooter(ShooterConstants.shooterSpeed);
+                break;
+
+            case AMP:
+                runAmp(0.1);
                 break;
         
             case OFF:

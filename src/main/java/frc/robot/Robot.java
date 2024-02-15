@@ -4,13 +4,22 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
+import org.opencv.photo.Photo;
+
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.shooterState;
 
@@ -28,6 +37,9 @@ public class Robot extends TimedRobot {
   Intake intake = new Intake();
   Climb climb = new Climb();
   Shooter shooter = new Shooter();
+  Photon photon = new Photon();
+
+  Compressor compressor;
 
   PlasmaJoystick driver = new PlasmaJoystick(Constants.RobotConstants.driverJoystickID);
 
@@ -45,6 +57,9 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    compressor = new Compressor(21, PneumaticsModuleType.REVPH);  
+    compressor.enableDigital();
   }
 
   /**
@@ -59,6 +74,7 @@ public class Robot extends TimedRobot {
     intake.periodic();
     climb.periodic();
     shooter.periodic();
+    photon.periodic();
   }
 
   /**
@@ -73,6 +89,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
+
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
@@ -81,15 +99,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+
   }
 
   /** This function is called once when teleop is enabled. */
@@ -128,6 +138,20 @@ public class Robot extends TimedRobot {
     }
     else {
       shooter.setState(Shooter.shooterState.OFF);
+    }
+
+    if(driver.Y.isPressed()) {
+      shooter.runAmp(0.3);
+    }
+    else{
+      shooter.runAmp(0);
+    }
+
+    if (driver.X.isPressed()) {
+      intake.extendIntake();
+    }
+    else {
+      intake.retractIntake();
     }
   }
 
