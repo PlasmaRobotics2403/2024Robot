@@ -4,24 +4,16 @@
 
 package frc.robot;
 
-import java.util.Optional;
-
-import org.opencv.photo.Photo;
-
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.controllers.PlasmaJoystick;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Shooter.shooterState;
 
 
 
@@ -109,9 +101,17 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    //creep mode
+    if(driver.LT.isPressed()) {
 
-    // set intake roller speeds
-    if(driver.A.isPressed()) {
+    }
+    //normal drive
+    else{
+
+    }
+
+    // setting controls for intake
+    if(driver.RT.isPressed()) {
       intake.setState(Intake.intakeState.INTJECT);
     }
     else if(driver.B.isPressed()) {
@@ -136,23 +136,14 @@ public class Robot extends TimedRobot {
     if(driver.LB.isPressed()) {
       shooter.setState(Shooter.shooterState.ON);
     }
+    else if(driver.Y.isPressed()) {
+      shooter.setState(Shooter.shooterState.AMP);;
+    }
     else {
       shooter.setState(Shooter.shooterState.OFF);
     }
 
-    if(driver.Y.isPressed()) {
-      shooter.runAmp(0.3);
-    }
-    else{
-      shooter.runAmp(0);
-    }
-
-    if (driver.X.isPressed()) {
-      intake.extendIntake();
-    }
-    else {
-      intake.retractIntake();
-    }
+    
   }
 
   /** This function is called once when the robot is disabled. */

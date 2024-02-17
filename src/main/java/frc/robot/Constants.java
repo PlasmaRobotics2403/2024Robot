@@ -1,14 +1,14 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class Constants {
     
     public class IntakeConstants {
     
         public static final int rollerID = 1;
+        public static final int passthroughID = 6;
+
         public static final double rollerSpeed = 0.5;
+        public static final double passthroughSpeed = 0.5;
         public static final int forwardChannelID = 0;
         public static final int backwardChannelID = 1;
     }
@@ -29,7 +29,10 @@ public class Constants {
         public static final int shooterMotor1ID = 2;
         public static final int shooterMotor2ID = 3;
         public static final double shooterSpeed = .9;
+        public static final double shooterRotSpeed = 0.1;
         public static final int ampMotorID = 4;
+        public static final int rotMotorID = 5;
+
     }
 
     public class SwerveConstants {
