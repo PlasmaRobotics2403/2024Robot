@@ -133,17 +133,24 @@ public class Robot extends TimedRobot {
     }
 
     //setting up controls for shooter
-    if(driver.LB.isPressed()) {
+    if(driver.RB.isPressed()) {
       shooter.setState(Shooter.shooterState.ON);
     }
-    else if(driver.Y.isPressed()) {
-      shooter.setState(Shooter.shooterState.AMP);;
-    }
-    else {
-      shooter.setState(Shooter.shooterState.OFF);
+    else if(driver.A.isPressed()) {
+      shooter.setState(Shooter.shooterState.CLIMB);
     }
 
-    
+    else if(driver.X.isPressed()) {
+      shooter.setDirection(true);
+      shooter.setState(Shooter.shooterState.ROT);
+    }
+    else if(driver.Y.isPressed()) {
+      shooter.setDirection(false);    
+      shooter.setState(Shooter.shooterState.ROT);
+    }
+    else{
+      shooter.setState(Shooter.shooterState.OFF);
+    }
   }
 
   /** This function is called once when the robot is disabled. */

@@ -1,5 +1,7 @@
 package frc.robot;
 
+import frc.robot.subsystems.Shooter.shooterState;
+
 public class Constants {
     
     public class IntakeConstants {
@@ -7,8 +9,8 @@ public class Constants {
         public static final int rollerID = 1;
         public static final int passthroughID = 6;
 
-        public static final double rollerSpeed = 0.5;
-        public static final double passthroughSpeed = 0.5;
+        public static final double rollerSpeed = 0.7;
+        public static final double passthroughSpeed = 0.7;
         public static final int forwardChannelID = 0;
         public static final int backwardChannelID = 1;
     }
@@ -33,6 +35,22 @@ public class Constants {
         public static final int ampMotorID = 4;
         public static final int rotMotorID = 5;
 
+        //positions
+        public static final double ampPos = 0;
+        public static final double climbPos = 0;
+        public static final double pos = 25;
+
+
+        //pid
+        public static final double shooterPivotKS = 0.25;
+        public static final double shooterPivotKV = 0.12;
+        public static final double shooterPivotKP = 10;
+        public static final double shooterPivotKD = 0;
+
+        public static final double shooterPivotVel = 180;        //rps
+        public static final double shooterPivotAccel = 360;     //rps/s
+        public static final double shooterPivotJerk = 3600;        //rps/s/s
+
     }
 
     public class SwerveConstants {
@@ -42,6 +60,11 @@ public class Constants {
 
         public static final double turnKp = 0;
         public static final double turnKd = 0;
+    }
+
+    public class PhotonConstants {
+        public static final double camHeight = 0;
+        
     }
 
     public class AutoConstants {

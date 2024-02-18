@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
@@ -15,12 +18,17 @@ public class Shooter {
     private CANSparkMax ampMotor;
     private TalonFX rotMotor;
 
+    private TalonFXConfiguration shooterRotConfigs;
+
     private shooterState currentState;
+    private boolean rotUp;
     public enum shooterState {
         ON,
         OFF,
         AMP,
-        ROT
+        ROT,
+        CLIMB
+
     }
 
     /**
@@ -32,10 +40,27 @@ public class Shooter {
         shooterMotor2 = new CANSparkMax(ShooterConstants.shooterMotor2ID, MotorType.kBrushless);
         ampMotor = new CANSparkMax(ShooterConstants.ampMotorID, MotorType.kBrushless);
         rotMotor = new TalonFX(ShooterConstants.rotMotorID);
-        rotMotor.setNeutralMode(NeutralModeValue.Brake);
 
+        // motion magic configuration
+        shooterRotConfigs = new TalonFXConfiguration();
+        var slot0Configs = shooterRotConfigs.Slot0;
+
+        slot0Configs.kS = ShooterConstants.shooterPivotKS;
+        slot0Configs.kV = ShooterConstants.shooterPivotKV;
+        slot0Configs.kP = ShooterConstants.shooterPivotKP;
+        slot0Configs.kD = ShooterConstants.shooterPivotKD;
+
+        var motionMagicConfigs = shooterRotConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ShooterConstants.shooterPivotVel;    //rps
+        motionMagicConfigs.MotionMagicAcceleration = ShooterConstants.shooterPivotAccel;    //rps/s
+        motionMagicConfigs.MotionMagicJerk = ShooterConstants.shooterPivotJerk;             //rps/s/s
+
+        rotMotor.getConfigurator().apply(shooterRotConfigs);
+        rotMotor.setNeutralMode(NeutralModeValue.Brake);
+        rotMotor.setPosition(0);
 
         currentState = shooterState.OFF;
+        rotUp = true;
     }
 
     public void runAmp(double speed) {
@@ -55,12 +80,25 @@ public class Shooter {
         rotMotor.set(speed);
     }
 
+    public void runMotionMagic(double pos) {
+        final MotionMagicVoltage request = new MotionMagicVoltage(0);
+        rotMotor.setControl(request.withPosition(pos));
+    }
+
     /**
      * sets the intake state
      * @param state
      */
     public void setState(shooterState state) {
         currentState = state;
+    }
+
+    public void setDirection(boolean dir) {
+        rotUp = dir;
+    }
+
+    public boolean getDirection() {
+        return rotUp;
     }
     /**
      * gets the current intake state
@@ -85,14 +123,27 @@ public class Shooter {
 
             case AMP:
                 runAmp(0.1);
+                //runMotionMagic(ShooterConstants.ampPos);
                 break;
 
             case ROT:
-                rotateShooter(ShooterConstants.shooterRotSpeed);
+                if(getDirection()){
+                    rotateShooter(ShooterConstants.shooterRotSpeed);
+                }
+                else {
+                    rotateShooter(ShooterConstants.shooterRotSpeed);
+                }
+                //runMotionMagic();
+                break;
+
+            case CLIMB:
+                runMotionMagic(ShooterConstants.pos);
+                break;
         
             case OFF:
                 runShooter(0);
                 runAmp(0);
+                runMotionMagic(0);
                 break;
                 
         }

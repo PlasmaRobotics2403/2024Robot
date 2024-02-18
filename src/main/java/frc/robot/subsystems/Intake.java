@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -31,12 +30,12 @@ public class Intake extends SubsystemBase{
         // roller config
         roller = new CANSparkMax(IntakeConstants.rollerID, MotorType.kBrushless);
         passthrough = new CANSparkMax(IntakeConstants.passthroughID, MotorType.kBrushless);
-        roller.setIdleMode(IdleMode.kBrake);
+        roller.setIdleMode(IdleMode.    kBrake);
         roller.setInverted(true);
+        passthrough.setInverted(false);
         passthrough.setIdleMode(IdleMode.kBrake);
         currentState = intakeState.STOW;
         intakeSolenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, IntakeConstants.forwardChannelID, IntakeConstants.backwardChannelID);
-        
     }
 
     /**
@@ -98,10 +97,8 @@ public class Intake extends SubsystemBase{
                 
             case STOW:
                 runIntake(0);
-                intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-
-                Timer.delay(0.5);
                 runPassthrough(0);
+                intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
                 break;
         }
     }
