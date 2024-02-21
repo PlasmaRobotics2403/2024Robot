@@ -28,8 +28,8 @@ public class Robot extends TimedRobot {
   // subsystems
   Intake intake = new Intake();
   Climb climb = new Climb();
-  Shooter shooter = new Shooter();
   Photon photon = new Photon();
+  Shooter shooter = new Shooter(photon);
 
   Compressor compressor;
 
@@ -139,8 +139,11 @@ public class Robot extends TimedRobot {
     else if(driver.A.isPressed()) {
       shooter.setState(Shooter.shooterState.CLIMB);
     }
-
-    else if(driver.X.isPressed()) {
+    else{
+      shooter.setState(Shooter.shooterState.OFF);
+    }
+/*
+   if(driver.X.isPressed()) {
       shooter.setDirection(true);
       shooter.setState(Shooter.shooterState.ROT);
     }
@@ -149,8 +152,9 @@ public class Robot extends TimedRobot {
       shooter.setState(Shooter.shooterState.ROT);
     }
     else{
-      shooter.setState(Shooter.shooterState.OFF);
+      shooter.rotateShooter(0);
     }
+    */
   }
 
   /** This function is called once when the robot is disabled. */

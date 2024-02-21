@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.Shooter.shooterState;
 
 public class Constants {
@@ -40,7 +41,8 @@ public class Constants {
         public static final double climbPos = 0;
         public static final double pos = 25;
 
-
+        public static final double angleConversion = (70*(100/30))/360; //angle to rotation
+        public static final double rotationConversion = (360/70*(100/30));
         //pid
         public static final double shooterPivotKS = 0.25;
         public static final double shooterPivotKV = 0.12;
@@ -63,7 +65,18 @@ public class Constants {
     }
 
     public class PhotonConstants {
-        public static final double camHeight = 0;
+        public static final double camHeight = Units.inchesToMeters(24.5);
+        public static final double tagHeight = Units.inchesToMeters(61.125);
+        public static final double camPitch = Units.degreesToRadians(20);
+        public static final double distanceOffset = Units.inchesToMeters(10);
+
+        public static final double angleSlope = -0.0462;
+        public static final double angleIntersept = 15.851;
+
+        public static final double pivotHeight = Units.inchesToMeters(17);
+        public static final double pivotOffset = Units.inchesToMeters(12);
+        public static final double pivotRestAngle = Units.inchesToMeters(20);
+        public static final double goalHeight = Units.inchesToMeters(87);
         
     }
 

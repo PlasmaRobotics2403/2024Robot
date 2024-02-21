@@ -7,12 +7,15 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import frc.robot.Constants.ShooterConstants;;
 
 public class Shooter {
+    Photon photon;
+
     private CANSparkMax shooterMotor1;
     private CANSparkMax shooterMotor2;
     private CANSparkMax ampMotor;
@@ -34,7 +37,8 @@ public class Shooter {
     /**
      * constructer for shooter
      */
-    public Shooter() {
+    public Shooter(Photon photon) {
+        this.photon = photon;
 
         shooterMotor1 = new CANSparkMax(ShooterConstants.shooterMotor1ID, MotorType.kBrushless);
         shooterMotor2 = new CANSparkMax(ShooterConstants.shooterMotor2ID, MotorType.kBrushless);
@@ -61,6 +65,10 @@ public class Shooter {
 
         currentState = shooterState.OFF;
         rotUp = true;
+    }
+
+    public double photonAngle() {
+        return photon.calAngle();
     }
 
     public void runAmp(double speed) {
@@ -110,7 +118,8 @@ public class Shooter {
 
     public void logging() {
         SmartDashboard.putNumber("Shooter Speed", shooterMotor1.get());
-        SmartDashboard.putNumber("Shooter Angle", rotMotor.getRotorPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter Rotation", rotMotor.getRotorPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter Angle", rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion);
     }
 
     public void periodic() {
@@ -131,13 +140,19 @@ public class Shooter {
                     rotateShooter(ShooterConstants.shooterRotSpeed);
                 }
                 else {
-                    rotateShooter(ShooterConstants.shooterRotSpeed);
+                    rotateShooter(-ShooterConstants.shooterRotSpeed);
                 }
                 //runMotionMagic();
                 break;
 
             case CLIMB:
-                runMotionMagic(ShooterConstants.pos);
+                /*if(photonAngle() > 25 || photonAngle() < 0){
+                    DriverStation.reportWarning("Photon angle to high or low", false);
+                    //runMotionMagic(0);
+                }*/
+                
+                    runMotionMagic(photonAngle()*ShooterConstants.angleConversion);
+                
                 break;
         
             case OFF:
