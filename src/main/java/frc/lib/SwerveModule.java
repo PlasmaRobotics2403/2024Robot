@@ -41,10 +41,18 @@ public class SwerveModule {
 
         TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
 
+          talonConfigs.MotorOutput.Inverted = 
+                constants.DriveMotorInverted
+                        ? InvertedValue.Clockwise_Positive
+                        : InvertedValue.CounterClockwise_Positive;
+
         talonConfigs.Slot0 = constants.DriveMotorGains;
         talonConfigs.TorqueCurrent.PeakForwardTorqueCurrent = constants.SlipCurrent;
         talonConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -constants.SlipCurrent;
+
         m_driveMotor.getConfigurator().apply(talonConfigs);
+
+        
 
         /* Undo changes for torqueCurrent */
         talonConfigs.TorqueCurrent = new TorqueCurrentConfigs();

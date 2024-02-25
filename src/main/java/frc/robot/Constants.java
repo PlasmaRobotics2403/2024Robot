@@ -35,14 +35,15 @@ public class Constants {
         public static final double shooterRotSpeed = 0.1;
         public static final int ampMotorID = 4;
         public static final int rotMotorID = 5;
+        public static final double shooterRPS = 16;
 
         //positions
         public static final double ampPos = 0;
         public static final double climbPos = 0;
         public static final double pos = 25;
 
-        public static final double angleConversion = (70*(100/30))/360; //angle to rotation
-        public static final double rotationConversion = (360/70*(100/30));
+        public static final double angleConversion = (35.0/54); //angle to rotation 70*(100/30)/360
+        public static final double rotationConversion = (360.0/70*(100/30));
         //pid
         public static final double shooterPivotKS = 0.25;
         public static final double shooterPivotKV = 0.12;
@@ -53,6 +54,16 @@ public class Constants {
         public static final double shooterPivotAccel = 360;     //rps/s
         public static final double shooterPivotJerk = 3600;        //rps/s/s
 
+        public static final double shooterVelocityKA = 0.01;
+        public static final double shooterVelocityKS = 0.25;
+        public static final double shooterVelocityKV = 0.12;
+        public static final double shooterVelocityKP = 0.11;
+        public static final double shooterVelocityKD = 0;
+
+        public static final double shooterVelocityVel = 18;        //rps
+        public static final double shooterVelocityAccel = 400;     //rps/s
+        public static final double shooterVelocityJerk = 4000;        //rps/s/s
+
     }
 
     public class SwerveConstants {
@@ -62,12 +73,13 @@ public class Constants {
 
         public static final double turnKp = 0;
         public static final double turnKd = 0;
+        public static final double creepSpeed = 0.5;
     }
 
     public class PhotonConstants {
         public static final double camHeight = Units.inchesToMeters(24.5);
         public static final double tagHeight = Units.inchesToMeters(61.125);
-        public static final double camPitch = Units.degreesToRadians(20);
+        public static final double camPitch = Units.degreesToRadians(25);
         public static final double distanceOffset = Units.inchesToMeters(10);
 
         public static final double angleSlope = -0.0462;
@@ -75,8 +87,8 @@ public class Constants {
 
         public static final double pivotHeight = Units.inchesToMeters(17);
         public static final double pivotOffset = Units.inchesToMeters(12);
-        public static final double pivotRestAngle = Units.inchesToMeters(20);
-        public static final double goalHeight = Units.inchesToMeters(87);
+        public static final double pivotRestAngle = Units.inchesToMeters(27);
+        public static final double goalHeight = Units.inchesToMeters(55);
         
     }
 

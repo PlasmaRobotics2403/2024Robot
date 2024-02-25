@@ -30,15 +30,7 @@ public class Photon {
     }
 
     public double calAngle() {
-        return Units.radiansToDegrees(Math.atan((Constants.PhotonConstants.goalHeight-Constants.PhotonConstants.pivotHeight)/(Math.pow(camGroundDistance(distance), 1)+Constants.PhotonConstants.pivotOffset)))-Constants.PhotonConstants.pivotRestAngle;
-    }
-
-    public double camGroundDistance(double dis) {
-        return Math.sqrt(Math.pow(dis, 2)-Math.pow((Constants.PhotonConstants.camHeight-Constants.PhotonConstants.tagHeight), 2));
-    }
-
-    public double getGoalDistance(double dis) {
-        return Math.sqrt(Math.pow(camGroundDistance(dis)+Constants.PhotonConstants.pivotOffset, 2)+Math.pow(Constants.PhotonConstants.goalHeight-Constants.PhotonConstants.pivotHeight, 2));
+        return -7.65*Math.log(distance) + 46.209;
     }
 
     public void logging() {
@@ -48,6 +40,9 @@ public class Photon {
             SmartDashboard.putNumber("camPitch", target.getPitch());
             SmartDashboard.putNumber("camArea", target.getArea());
             SmartDashboard.putNumber("camSkew", target.getSkew());
+            
+            SmartDashboard.putNumber("Distance to apriltag", distance);
+            SmartDashboard.putNumber("Calculated Angle for Shoooter", calAngle());
         }
 
     }
@@ -66,10 +61,8 @@ public class Photon {
             area = target.getArea();
             skew = target.getSkew();
             distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.PhotonConstants.camHeight, Constants.PhotonConstants.tagHeight, Constants.PhotonConstants.camPitch, Units.degreesToRadians(result.getBestTarget().getPitch()))+PhotonConstants.distanceOffset;
-
-            SmartDashboard.putNumber("Distance from target", Units.metersToInches(camGroundDistance(distance)));
-            SmartDashboard.putNumber("Calculated Angle for Shoooter", calAngle());
-            SmartDashboard.putNumber("Goal Distance", getGoalDistance(Units.metersToInches(distance)));
+            
+            distance = Units.metersToInches(distance);
             logging();
         }
     }

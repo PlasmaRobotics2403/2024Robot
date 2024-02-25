@@ -4,8 +4,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -14,12 +16,15 @@ public class Intake extends SubsystemBase{
     
     private CANSparkMax roller;
     private CANSparkMax passthrough;
+    private DigitalInput passthroughBeamBreak;
 
     private intakeState currentState;
     public enum intakeState {
         INTJECT,
         EJECT,
         STOW,
+        INDEX,
+        SHOOT
         
     }
     private DoubleSolenoid intakeSolenoid;
@@ -28,6 +33,7 @@ public class Intake extends SubsystemBase{
      */
     public Intake() {
         // roller config
+        passthroughBeamBreak = new DigitalInput(0);
         roller = new CANSparkMax(IntakeConstants.rollerID, MotorType.kBrushless);
         passthrough = new CANSparkMax(IntakeConstants.passthroughID, MotorType.kBrushless);
         roller.setIdleMode(IdleMode.    kBrake);
@@ -49,12 +55,17 @@ public class Intake extends SubsystemBase{
         passthrough.set(speed);
     }
 
+    public boolean getBeamBreak() {
+        return !passthroughBeamBreak.get();
+    }
+
     /**
      * periodiclly logs information to
      * smartdashboard
      */
     public void logging() {
         SmartDashboard.putNumber("Intake Roller Speed", roller.get());
+        SmartDashboard.putBoolean("Beam Break", getBeamBreak());
     }
 
     /**
@@ -86,13 +97,34 @@ public class Intake extends SubsystemBase{
 
         switch (currentState) {
             case INTJECT:
+            if(getBeamBreak()) {
+                runIntake(0);
+                intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+                runPassthrough(0);
+            }
+            else{
+                intakeSolenoid.set(DoubleSolenoid.Value.kForward);
                 runIntake(IntakeConstants.rollerSpeed);
                 runPassthrough(IntakeConstants.passthroughSpeed);
-                intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+            }
                 break;
+
+            case SHOOT:
+                runPassthrough(IntakeConstants.passthroughSpeed);
+                break;
+                
             case EJECT:
-                runIntake(-IntakeConstants.rollerSpeed);
                 intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+                runIntake(-IntakeConstants.rollerSpeed);
+                break;
+
+            case INDEX:
+                if(getBeamBreak()) {
+                    runPassthrough(0.5);
+                }
+                else{
+                    runPassthrough(0);
+                }
                 break;
                 
             case STOW:

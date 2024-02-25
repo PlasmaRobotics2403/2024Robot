@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -16,12 +18,15 @@ import frc.robot.Constants.ShooterConstants;;
 public class Shooter {
     Photon photon;
 
-    private CANSparkMax shooterMotor1;
-    private CANSparkMax shooterMotor2;
+    private TalonFX shooterMotor1;
+    private TalonFX shooterMotor2;
     private CANSparkMax ampMotor;
     private TalonFX rotMotor;
 
+    private double testAngle;
+
     private TalonFXConfiguration shooterRotConfigs;
+    private TalonFXConfiguration shooterVelocityConfigs;
 
     private shooterState currentState;
     private boolean rotUp;
@@ -30,7 +35,9 @@ public class Shooter {
         OFF,
         AMP,
         ROT,
-        CLIMB
+        CLIMB,
+        RPS,
+        TEST
 
     }
 
@@ -40,31 +47,71 @@ public class Shooter {
     public Shooter(Photon photon) {
         this.photon = photon;
 
-        shooterMotor1 = new CANSparkMax(ShooterConstants.shooterMotor1ID, MotorType.kBrushless);
-        shooterMotor2 = new CANSparkMax(ShooterConstants.shooterMotor2ID, MotorType.kBrushless);
+        shooterMotor1 = new TalonFX(ShooterConstants.shooterMotor1ID);
+        shooterMotor2 = new TalonFX(ShooterConstants.shooterMotor2ID);
         ampMotor = new CANSparkMax(ShooterConstants.ampMotorID, MotorType.kBrushless);
         rotMotor = new TalonFX(ShooterConstants.rotMotorID);
 
-        // motion magic configuration
+        // velocity motion magic config
+        shooterVelocityConfigs = new TalonFXConfiguration();
+        var velocitySlot0Configs = shooterVelocityConfigs.Slot0;
+
+        velocitySlot0Configs.kA = ShooterConstants.shooterVelocityKA;
+        velocitySlot0Configs.kS = ShooterConstants.shooterVelocityKS;
+        velocitySlot0Configs.kV = ShooterConstants.shooterVelocityKV;
+        velocitySlot0Configs.kP = ShooterConstants.shooterVelocityKP;
+        velocitySlot0Configs.kD = ShooterConstants.shooterVelocityKD;
+
+        var velocityMotionMagicConfigs = shooterVelocityConfigs.MotionMagic;
+        //velocityMotionMagicConfigs.MotionMagicCruiseVelocity = ShooterConstants.shooterVelocityVel;    //rps
+        velocityMotionMagicConfigs.MotionMagicAcceleration = ShooterConstants.shooterVelocityAccel;    //rps/s
+        velocityMotionMagicConfigs.MotionMagicJerk = ShooterConstants.shooterVelocityJerk;             //rps/s/s
+        shooterMotor1.getConfigurator().apply(velocityMotionMagicConfigs);
+        shooterMotor2.getConfigurator().apply(velocityMotionMagicConfigs);
+
+        // pivot motion magic configuration
         shooterRotConfigs = new TalonFXConfiguration();
-        var slot0Configs = shooterRotConfigs.Slot0;
+        var pivotSlot0Configs = shooterRotConfigs.Slot0;
 
-        slot0Configs.kS = ShooterConstants.shooterPivotKS;
-        slot0Configs.kV = ShooterConstants.shooterPivotKV;
-        slot0Configs.kP = ShooterConstants.shooterPivotKP;
-        slot0Configs.kD = ShooterConstants.shooterPivotKD;
+        pivotSlot0Configs.kS = ShooterConstants.shooterPivotKS;
+        pivotSlot0Configs.kV = ShooterConstants.shooterPivotKV;
+        pivotSlot0Configs.kP = ShooterConstants.shooterPivotKP;
+        pivotSlot0Configs.kD = ShooterConstants.shooterPivotKD;
 
-        var motionMagicConfigs = shooterRotConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = ShooterConstants.shooterPivotVel;    //rps
-        motionMagicConfigs.MotionMagicAcceleration = ShooterConstants.shooterPivotAccel;    //rps/s
-        motionMagicConfigs.MotionMagicJerk = ShooterConstants.shooterPivotJerk;             //rps/s/s
-
+        var pivotMotionMagicConfigs = shooterRotConfigs.MotionMagic;
+        pivotMotionMagicConfigs.MotionMagicCruiseVelocity = ShooterConstants.shooterPivotVel;    //rps
+        pivotMotionMagicConfigs.MotionMagicAcceleration = ShooterConstants.shooterPivotAccel;    //rps/s
+        pivotMotionMagicConfigs.MotionMagicJerk = ShooterConstants.shooterPivotJerk;             //rps/s/s
         rotMotor.getConfigurator().apply(shooterRotConfigs);
+
         rotMotor.setNeutralMode(NeutralModeValue.Brake);
         rotMotor.setPosition(0);
 
         currentState = shooterState.OFF;
         rotUp = true;
+        testAngle = 0;
+    }
+
+    public void runRPS(double rps) {
+        final MotionMagicVelocityVoltage r_request = new MotionMagicVelocityVoltage(0);
+        //r_request.Acceleration = 100;
+        shooterMotor1.setControl(r_request.withVelocity(rps));
+        shooterMotor2.setControl(r_request.withVelocity(rps));
+    }
+
+    public void runMotionMagicAngle(double pos) {
+        if(pos>90||pos<0) {
+            DriverStation.reportWarning("DONT DO THAT", true);
+            rotMotor.set(0);
+        }
+        else{
+            final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+            rotMotor.setControl(m_request.withPosition(pivotSetpointCalc(pos)));
+        }
+    }
+
+    public double pivotSetpointCalc(double angle) {
+        return angle*ShooterConstants.angleConversion;
     }
 
     public double photonAngle() {
@@ -88,10 +135,12 @@ public class Shooter {
         rotMotor.set(speed);
     }
 
-    public void runMotionMagic(double pos) {
+    public void runMotionMagicRotations(double pos) {
         final MotionMagicVoltage request = new MotionMagicVoltage(0);
         rotMotor.setControl(request.withPosition(pos));
     }
+
+  
 
     /**
      * sets the intake state
@@ -116,10 +165,14 @@ public class Shooter {
         return currentState;
     }
 
+
+
     public void logging() {
         SmartDashboard.putNumber("Shooter Speed", shooterMotor1.get());
         SmartDashboard.putNumber("Shooter Rotation", rotMotor.getRotorPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter Angle", rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion);
+        SmartDashboard.putNumber("Commanded Rotation", pivotSetpointCalc(photonAngle()));
+        testAngle = (Double) SmartDashboard.getNumber("Test Angle", 0.0);
+        SmartDashboard.putNumber("Test Angle", testAngle);
     }
 
     public void periodic() {
@@ -151,14 +204,21 @@ public class Shooter {
                     //runMotionMagic(0);
                 }*/
                 
-                    runMotionMagic(photonAngle()*ShooterConstants.angleConversion);
+                runMotionMagicAngle(photonAngle());
                 
+                break;
+            case RPS:
+                runRPS(ShooterConstants.shooterRPS);
+                break;
+
+            case TEST:
+                runMotionMagicAngle(testAngle);
                 break;
         
             case OFF:
                 runShooter(0);
                 runAmp(0);
-                runMotionMagic(0);
+                runMotionMagicAngle(0);
                 break;
                 
         }

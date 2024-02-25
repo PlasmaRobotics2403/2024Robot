@@ -4,16 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.controllers.PlasmaJoystick;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Shooter.shooterState;
 
 
 
@@ -27,6 +32,12 @@ public class Robot extends TimedRobot {
 
   // subsystems
   Intake intake = new Intake();
+  Swerve swerve = new Swerve(TunerConstants.DrivetrainConstants,
+    TunerConstants.FrontLeft,
+    TunerConstants.FrontRight,
+    TunerConstants.BackLeft, 
+    TunerConstants.BackRight);
+
   Climb climb = new Climb();
   Photon photon = new Photon();
   Shooter shooter = new Shooter(photon);
@@ -103,19 +114,25 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     //creep mode
     if(driver.LT.isPressed()) {
-
+      swerve.driveFieldCentric(new ChassisSpeeds(driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.creepSpeed*1.2, -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.creepSpeed*1.2, -driver.RightX.getFilteredAxis()*Constants.SwerveConstants.creepSpeed*1.2));
     }
     //normal drive
     else{
-
+      swerve.driveFieldCentric(new ChassisSpeeds(driver.LeftY.getFilteredAxis()*1.2, -driver.LeftX.getFilteredAxis()*1.2, -driver.RightX.getFilteredAxis()*1.2));
     }
 
     // setting controls for intake
-    if(driver.RT.isPressed()) {
+    if(driver.X.isPressed()) {
+      intake.setState(Intake.intakeState.INDEX);
+    }
+    else if(driver.RT.isPressed()) {
       intake.setState(Intake.intakeState.INTJECT);
     }
     else if(driver.B.isPressed()) {
       intake.setState(Intake.intakeState.EJECT);
+    }
+    else if(driver.dPad.getPOV() == 90) {
+      intake.setState(Intake.intakeState.SHOOT);
     }
     else{
       intake.setState(Intake.intakeState.STOW);
@@ -131,13 +148,19 @@ public class Robot extends TimedRobot {
     else{
         climb.setState(Climb.climbState.NOTMOVING);
     }
-
+    
     //setting up controls for shooter
     if(driver.RB.isPressed()) {
       shooter.setState(Shooter.shooterState.ON);
     }
+    else if(driver.LB.isPressed()) {
+      shooter.setState(Shooter.shooterState.TEST);
+    }
     else if(driver.A.isPressed()) {
       shooter.setState(Shooter.shooterState.CLIMB);
+    }
+    else if(driver.Y.isPressed()) {
+      shooter.setState(shooterState.RPS);
     }
     else{
       shooter.setState(Shooter.shooterState.OFF);
