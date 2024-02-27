@@ -35,7 +35,7 @@ public class Constants {
         public static final double shooterRotSpeed = 0.1;
         public static final int ampMotorID = 4;
         public static final int rotMotorID = 5;
-        public static final double shooterRPS = 16;
+        public static final double shooterRPS = 80;
 
         //positions
         public static final double ampPos = 0;
@@ -54,13 +54,13 @@ public class Constants {
         public static final double shooterPivotAccel = 360;     //rps/s
         public static final double shooterPivotJerk = 3600;        //rps/s/s
 
-        public static final double shooterVelocityKA = 0.01;
         public static final double shooterVelocityKS = 0.25;
         public static final double shooterVelocityKV = 0.12;
-        public static final double shooterVelocityKP = 0.11;
+        public static final double shooterVelocityKA = 0.01;
+        public static final double shooterVelocityKP = 60;
+        public static final double shooterVelocityKI = 0;
         public static final double shooterVelocityKD = 0;
 
-        public static final double shooterVelocityVel = 18;        //rps
         public static final double shooterVelocityAccel = 400;     //rps/s
         public static final double shooterVelocityJerk = 4000;        //rps/s/s
 

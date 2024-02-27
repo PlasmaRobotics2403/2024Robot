@@ -103,8 +103,8 @@ public class Intake extends SubsystemBase{
                 runPassthrough(0);
             }
             else{
-                intakeSolenoid.set(DoubleSolenoid.Value.kForward);
-                runIntake(IntakeConstants.rollerSpeed);
+                //intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+                //runIntake(IntakeConstants.rollerSpeed);
                 runPassthrough(IntakeConstants.passthroughSpeed);
             }
                 break;

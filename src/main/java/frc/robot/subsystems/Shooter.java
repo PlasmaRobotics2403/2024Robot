@@ -52,18 +52,18 @@ public class Shooter {
         ampMotor = new CANSparkMax(ShooterConstants.ampMotorID, MotorType.kBrushless);
         rotMotor = new TalonFX(ShooterConstants.rotMotorID);
 
-        // velocity motion magic config
+        // shooter velocity motion magic config
         shooterVelocityConfigs = new TalonFXConfiguration();
         var velocitySlot0Configs = shooterVelocityConfigs.Slot0;
 
-        velocitySlot0Configs.kA = ShooterConstants.shooterVelocityKA;
         velocitySlot0Configs.kS = ShooterConstants.shooterVelocityKS;
         velocitySlot0Configs.kV = ShooterConstants.shooterVelocityKV;
+        velocitySlot0Configs.kA = ShooterConstants.shooterVelocityKA;
         velocitySlot0Configs.kP = ShooterConstants.shooterVelocityKP;
+        velocitySlot0Configs.kI = ShooterConstants.shooterVelocityKI;
         velocitySlot0Configs.kD = ShooterConstants.shooterVelocityKD;
 
         var velocityMotionMagicConfigs = shooterVelocityConfigs.MotionMagic;
-        //velocityMotionMagicConfigs.MotionMagicCruiseVelocity = ShooterConstants.shooterVelocityVel;    //rps
         velocityMotionMagicConfigs.MotionMagicAcceleration = ShooterConstants.shooterVelocityAccel;    //rps/s
         velocityMotionMagicConfigs.MotionMagicJerk = ShooterConstants.shooterVelocityJerk;             //rps/s/s
         shooterMotor1.getConfigurator().apply(velocityMotionMagicConfigs);
@@ -94,9 +94,13 @@ public class Shooter {
 
     public void runRPS(double rps) {
         final MotionMagicVelocityVoltage r_request = new MotionMagicVelocityVoltage(0);
-        //r_request.Acceleration = 100;
+        r_request.Acceleration = 0;
+        r_request.EnableFOC = false;
+
         shooterMotor1.setControl(r_request.withVelocity(rps));
         shooterMotor2.setControl(r_request.withVelocity(rps));
+
+        //DriverStation.reportWarning(shooterMotor1.get, false);
     }
 
     public void runMotionMagicAngle(double pos) {
@@ -169,8 +173,7 @@ public class Shooter {
 
     public void logging() {
         SmartDashboard.putNumber("Shooter Speed", shooterMotor1.get());
-        SmartDashboard.putNumber("Shooter Rotation", rotMotor.getRotorPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Commanded Rotation", pivotSetpointCalc(photonAngle()));
+        SmartDashboard.putNumber("Shooter Angle", rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.angleConversion);
         testAngle = (Double) SmartDashboard.getNumber("Test Angle", 0.0);
         SmartDashboard.putNumber("Test Angle", testAngle);
     }

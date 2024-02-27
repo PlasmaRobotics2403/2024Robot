@@ -14,9 +14,8 @@ import frc.robot.Constants.PhotonConstants;
 public class Photon {
     PhotonPipelineResult result;
 
-    PhotonTrackedTarget target;
-
     PhotonCamera camera;
+    PhotonTrackedTarget target;
 
     boolean hasTarget;
     double yaw;
@@ -24,27 +23,29 @@ public class Photon {
     double area;
     double skew;
     double distance;
+    double calculatedAngle;
 
     public Photon() {
         camera = new PhotonCamera("plasmacam");
+        calculatedAngle = 0;
     }
 
     public double calAngle() {
-        return -7.65*Math.log(distance) + 46.209;
+        calculatedAngle = -27.34*Math.log(distance) + 151.66;
+        return calculatedAngle;
     }
 
     public void logging() {
-        if(hasTarget) {
-            SmartDashboard.putBoolean("hasTarget", hasTarget);
-            SmartDashboard.putNumber("camYaw", target.getYaw());
-            SmartDashboard.putNumber("camPitch", target.getPitch());
-            SmartDashboard.putNumber("camArea", target.getArea());
-            SmartDashboard.putNumber("camSkew", target.getSkew());
-            
-            SmartDashboard.putNumber("Distance to apriltag", distance);
-            SmartDashboard.putNumber("Calculated Angle for Shoooter", calAngle());
-        }
+        SmartDashboard.putBoolean("hasTarget", hasTarget);
+        SmartDashboard.putNumber("Target ID", target.getFiducialId());
 
+        SmartDashboard.putNumber("camYaw", yaw);
+        SmartDashboard.putNumber("camPitch", pitch);
+        SmartDashboard.putNumber("camArea", area);
+        SmartDashboard.putNumber("camSkew", skew);
+            
+        SmartDashboard.putNumber("Distance to apriltag", distance);
+        SmartDashboard.putNumber("Calculated Angle for Shoooter", calAngle());
     }
 
     public void periodic() {
@@ -52,19 +53,18 @@ public class Photon {
 
         hasTarget = result.hasTargets();
 
-
-
-        if(hasTarget) {
-            target = result.getBestTarget();
-            yaw = target.getYaw();
-            pitch = target.getPitch();
-            area = target.getArea();
-            skew = target.getSkew();
-            distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.PhotonConstants.camHeight, Constants.PhotonConstants.tagHeight, Constants.PhotonConstants.camPitch, Units.degreesToRadians(result.getBestTarget().getPitch()))+PhotonConstants.distanceOffset;
-            
-            distance = Units.metersToInches(distance);
-            logging();
+        for(PhotonTrackedTarget target : result.targets) {
+            if (target.getFiducialId() == 7 || target.getFiducialId() == 4) {
+                this.target = target;
+                yaw = target.getYaw();
+                pitch = target.getPitch();
+                area = target.getArea();
+                skew = target.getSkew();
+                distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.PhotonConstants.camHeight, Constants.PhotonConstants.tagHeight, Constants.PhotonConstants.camPitch, Units.degreesToRadians(result.getBestTarget().getPitch()))+PhotonConstants.distanceOffset;
+                distance = Units.metersToInches(distance);
+            }
         }
+        logging();
     }
 
     

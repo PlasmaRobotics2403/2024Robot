@@ -72,12 +72,12 @@ public class Swerve {
 
     /* Put smartdashboard calls in separate thread to reduce performance impact */
     private void logging() {
-        SmartDashboard.putNumber("Successful Daqs", m_odometryThread.getSuccessfulDaqs());
-        SmartDashboard.putNumber("Failed Daqs", m_odometryThread.getFailedDaqs());
-        SmartDashboard.putNumber("X Pos", m_odometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Y Pos", m_odometry.getPoseMeters().getY());
-        SmartDashboard.putNumber("Angle", m_odometry.getPoseMeters().getRotation().getDegrees());
-        SmartDashboard.putNumber("Odometry Loop Time", m_odometryThread.getTime());
+        //SmartDashboard.putNumber("Successful Daqs", m_odometryThread.getSuccessfulDaqs());
+        //SmartDashboard.putNumber("Failed Daqs", m_odometryThread.getFailedDaqs());
+        //SmartDashboard.putNumber("X Pos", m_odometry.getPoseMeters().getX());
+        //SmartDashboard.putNumber("Y Pos", m_odometry.getPoseMeters().getY());
+        //SmartDashboard.putNumber("Angle", m_odometry.getPoseMeters().getRotation().getDegrees());
+        //SmartDashboard.putNumber("Odometry Loop Time", m_odometryThread.getTime());
     }
 
     /* Perform swerve module updates in a separate thread to minimize latency */
