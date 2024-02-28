@@ -17,13 +17,13 @@ public class Photon {
     PhotonCamera camera;
     PhotonTrackedTarget target;
 
-    boolean hasTarget;
-    double yaw;
-    double pitch;
-    double area;
-    double skew;
-    double distance;
-    double calculatedAngle;
+    boolean hasTarget = false;
+    double yaw = 0.0;
+    double pitch = 0.0;
+    double area = 0.0;
+    double skew = 0.0;
+    double distance = 0.0;
+    double calculatedAngle = 0.0;
 
     public Photon() {
         camera = new PhotonCamera("plasmacam");
@@ -31,21 +31,25 @@ public class Photon {
     }
 
     public double calAngle() {
-        calculatedAngle = -27.34*Math.log(distance) + 151.66;
+        calculatedAngle = 72.79091*Math.pow(Math.E,-0.01126*distance);
         return calculatedAngle;
     }
 
     public void logging() {
-        SmartDashboard.putBoolean("hasTarget", hasTarget);
-        SmartDashboard.putNumber("Target ID", target.getFiducialId());
-
-        SmartDashboard.putNumber("camYaw", yaw);
-        SmartDashboard.putNumber("camPitch", pitch);
-        SmartDashboard.putNumber("camArea", area);
-        SmartDashboard.putNumber("camSkew", skew);
+            SmartDashboard.putBoolean("hasTarget", hasTarget);
             
-        SmartDashboard.putNumber("Distance to apriltag", distance);
-        SmartDashboard.putNumber("Calculated Angle for Shoooter", calAngle());
+            if(hasTarget) {
+                SmartDashboard.putNumber("Target ID", target.getFiducialId());
+
+                SmartDashboard.putNumber("camYaw", yaw);
+                SmartDashboard.putNumber("camPitch", pitch);
+                SmartDashboard.putNumber("camArea", area);
+                SmartDashboard.putNumber("camSkew", skew);
+                
+                SmartDashboard.putNumber("Distance to apriltag", distance);
+                SmartDashboard.putNumber("Calculated Angle for Shoooter", calAngle());
+            }
+        
     }
 
     public void periodic() {
