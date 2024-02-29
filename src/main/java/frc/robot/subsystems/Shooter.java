@@ -26,7 +26,6 @@ public class Shooter {
     private double testAngle;
 
     private TalonFXConfiguration shooterRotConfigs;
-    private TalonFXConfiguration shooterVelocityConfigs;
 
     private shooterState currentState;
     private boolean rotUp;
@@ -53,9 +52,9 @@ public class Shooter {
         rotMotor = new TalonFX(ShooterConstants.rotMotorID);
 
         // shooter velocity motion magic config
-        shooterVelocityConfigs = new TalonFXConfiguration();
-        var velocitySlot0Configs = shooterVelocityConfigs.Slot0;
+        var shooterVelocityConfigs = new TalonFXConfiguration();
 
+        var velocitySlot0Configs = shooterVelocityConfigs.Slot0;
         velocitySlot0Configs.kS = ShooterConstants.shooterVelocityKS;
         velocitySlot0Configs.kV = ShooterConstants.shooterVelocityKV;
         velocitySlot0Configs.kA = ShooterConstants.shooterVelocityKA;
@@ -66,8 +65,9 @@ public class Shooter {
         var velocityMotionMagicConfigs = shooterVelocityConfigs.MotionMagic;
         velocityMotionMagicConfigs.MotionMagicAcceleration = ShooterConstants.shooterVelocityAccel;    //rps/s
         velocityMotionMagicConfigs.MotionMagicJerk = ShooterConstants.shooterVelocityJerk;             //rps/s/s
-        shooterMotor1.getConfigurator().apply(velocityMotionMagicConfigs);
-        shooterMotor2.getConfigurator().apply(velocityMotionMagicConfigs);
+
+        shooterMotor1.getConfigurator().apply(shooterVelocityConfigs);
+        shooterMotor2.getConfigurator().apply(shooterVelocityConfigs);
 
         // pivot motion magic configuration
         shooterRotConfigs = new TalonFXConfiguration();
@@ -135,7 +135,7 @@ public class Shooter {
         shooterMotor2.set(speed);
     }
 
-    public void rotateShooter(double speed) {
+    public void rotateShooter(double speed) {  
         rotMotor.set(speed);
     }
 
@@ -222,6 +222,7 @@ public class Shooter {
                 runShooter(0);
                 runAmp(0);
                 runMotionMagicAngle(0);
+                //runRPS(0);
                 break;
                 
         }
