@@ -15,16 +15,13 @@ import frc.robot.Constants.IntakeConstants;
 public class Intake extends SubsystemBase{
     
     private CANSparkMax roller;
-    private CANSparkMax passthrough;
-    private DigitalInput passthroughBeamBreak;
 
     private intakeState currentState;
+    private DigitalInput sensor;
     public enum intakeState {
         INTJECT,
         EJECT,
-        STOW,
-        INDEX,
-        SHOOT
+        STOW
         
     }
     private DoubleSolenoid intakeSolenoid;
@@ -33,39 +30,23 @@ public class Intake extends SubsystemBase{
      */
     public Intake() {
         // roller config
-        passthroughBeamBreak = new DigitalInput(0);
         roller = new CANSparkMax(IntakeConstants.rollerID, MotorType.kBrushless);
-        passthrough = new CANSparkMax(IntakeConstants.passthroughID, MotorType.kBrushless);
-        roller.setIdleMode(IdleMode.    kBrake);
+        roller.setIdleMode(IdleMode.kBrake);
         roller.setInverted(true);
-        passthrough.setInverted(false);
-        passthrough.setIdleMode(IdleMode.kBrake);
-        currentState = intakeState.STOW;
         intakeSolenoid = new DoubleSolenoid(21, PneumaticsModuleType.REVPH, IntakeConstants.forwardChannelID, IntakeConstants.backwardChannelID);
+        sensor = new DigitalInput(0);
+
+        currentState = intakeState.STOW;
     }
 
+    public boolean getSensor() {
+        return !sensor.get();
+    }
     /**
      * sets the speed of the roller motor
      */
-    public void runIntake(double speed) {
+    private void runIntake(double speed) {
         roller.set(speed);
-    }
-
-    public void runPassthrough(double speed) {
-        passthrough.set(speed);
-    }
-
-    public boolean getBeamBreak() {
-        return !passthroughBeamBreak.get();
-    }
-
-    /**
-     * periodiclly logs information to
-     * smartdashboard
-     */
-    public void logging() {
-        SmartDashboard.putNumber("Intake Roller Speed", roller.get());
-        SmartDashboard.putBoolean("Beam Break", getBeamBreak());
     }
 
     /**
@@ -83,54 +64,41 @@ public class Intake extends SubsystemBase{
         return currentState;
     }
 
-    public void extendIntake() {
+    private void extendIntake() {
         intakeSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
-    public void retractIntake() {
+    private void retractIntake() {
         intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-    
+        /**
+     * periodiclly logs information to
+     * smartdashboard
+     */
+    private void logging() {
+        SmartDashboard.putNumber("Intake Roller Speed", roller.get());
+        SmartDashboard.putString("Intake State", currentState.toString());
+        SmartDashboard.putBoolean("intake beam brake", getSensor());
+    }
+
     public void periodic() {
         logging();
 
         switch (currentState) {
-            case INTJECT:
-            if(getBeamBreak()) {
+            case STOW:
                 runIntake(0);
-                intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-                runPassthrough(0);
-            }
-            else{
-                //intakeSolenoid.set(DoubleSolenoid.Value.kForward);
-                //runIntake(IntakeConstants.rollerSpeed);
-                runPassthrough(IntakeConstants.passthroughSpeed);
-            }
+                retractIntake();
                 break;
 
-            case SHOOT:
-                runPassthrough(IntakeConstants.passthroughSpeed);
+            case INTJECT:
+                runIntake(IntakeConstants.rollerSpeed);
+                extendIntake();
                 break;
                 
             case EJECT:
-                intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+                extendIntake();
                 runIntake(-IntakeConstants.rollerSpeed);
-                break;
-
-            case INDEX:
-                if(getBeamBreak()) {
-                    runPassthrough(0.5);
-                }
-                else{
-                    runPassthrough(0);
-                }
-                break;
-                
-            case STOW:
-                runIntake(0);
-                runPassthrough(0);
-                intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
                 break;
         }
     }

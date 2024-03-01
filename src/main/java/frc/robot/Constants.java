@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.Climb.climbState;
 import frc.robot.subsystems.Shooter.shooterState;
 
 public class Constants {
@@ -8,12 +9,22 @@ public class Constants {
     public class IntakeConstants {
     
         public static final int rollerID = 1;
-        public static final int passthroughID = 6;
 
         public static final double rollerSpeed = 0.7;
-        public static final double passthroughSpeed = 0.7;
         public static final int forwardChannelID = 0;
         public static final int backwardChannelID = 1;
+    }
+
+    public class IndexConstants {
+    
+        public static final int passthroughID = 6;
+        public static final int indexSensorID = 0;
+        public static final int shooterSensorID = 1;
+
+        public static final double passthroughSpeed = 0.7;
+        public static final double indexSpeed = 0.15;
+
+
     }
 
     public class ClimbConstants {
@@ -43,7 +54,7 @@ public class Constants {
         public static final double pos = 25;
 
         public static final double angleConversion = (35.0/54); //angle to rotation 70*(100/30)/360
-        public static final double rotationConversion = (360.0/70*(100/30));
+        public static final double rotationConversion = (360.0/70*(100/30)) /10;
         //pid
         public static final double shooterPivotKS = 0.25;
         public static final double shooterPivotKV = 0.12;

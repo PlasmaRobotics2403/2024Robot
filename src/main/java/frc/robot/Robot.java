@@ -12,8 +12,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.controllers.PlasmaJoystick;
+import frc.robot.StateManager.robotState;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Shooter;
@@ -32,6 +34,7 @@ public class Robot extends TimedRobot {
 
   // subsystems
   Intake intake = new Intake();
+  Index index = new Index();
   Swerve swerve = new Swerve(TunerConstants.DrivetrainConstants,
     TunerConstants.FrontLeft,
     TunerConstants.FrontRight,
@@ -41,6 +44,7 @@ public class Robot extends TimedRobot {
   Climb climb = new Climb();
   Photon photon = new Photon();
   Shooter shooter = new Shooter(photon);
+  StateManager stateManager = new StateManager(intake, shooter, index);
 
   Compressor compressor;
 
@@ -78,6 +82,8 @@ public class Robot extends TimedRobot {
     climb.periodic();
     shooter.periodic();
     photon.periodic();
+    index.periodic();
+    stateManager.periodic();
   }
 
   /**
@@ -107,7 +113,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    stateManager.setState(robotState.IDLE);
+  }
 
   /** This function is called periodically during operator control. */
   @Override
@@ -122,20 +130,18 @@ public class Robot extends TimedRobot {
     }
 
     // setting controls for intake
-    if(driver.X.isPressed()) {
-      intake.setState(Intake.intakeState.INDEX);
-    }
-    else if(driver.RT.isPressed()) {
-      intake.setState(Intake.intakeState.INTJECT);
+
+    if(driver.RB.isPressed()) {
+      stateManager.setState(robotState.INTAKE);
     }
     else if(driver.B.isPressed()) {
-      intake.setState(Intake.intakeState.EJECT);
+      stateManager.setState(robotState.EJECT);
     }
-    else if(driver.dPad.getPOV() == 90) {
-      intake.setState(Intake.intakeState.SHOOT);
+    else if(driver.RT.isPressed()) {
+      stateManager.setState(robotState.SHOOT);
     }
     else{
-      intake.setState(Intake.intakeState.STOW);
+      stateManager.setState(robotState.IDLE);
     }
 
     // setting controls for climb
@@ -149,35 +155,6 @@ public class Robot extends TimedRobot {
         climb.setState(Climb.climbState.NOTMOVING);
     }
     
-    //setting up controls for shooter
-    if(driver.RB.isPressed()) {
-      shooter.setState(Shooter.shooterState.ON);
-    }
-    else if(driver.LB.isPressed()) {
-      shooter.setState(Shooter.shooterState.TEST);
-    }
-    else if(driver.A.isPressed()) {
-      shooter.setState(Shooter.shooterState.CLIMB);
-    }
-    else if(driver.Y.isPressed()) {
-      shooter.setState(shooterState.RPS);
-    }
-    else{
-      shooter.setState(Shooter.shooterState.OFF);
-    }
-/*
-   if(driver.X.isPressed()) {
-      shooter.setDirection(true);
-      shooter.setState(Shooter.shooterState.ROT);
-    }
-    else if(driver.Y.isPressed()) {
-      shooter.setDirection(false);    
-      shooter.setState(Shooter.shooterState.ROT);
-    }
-    else{
-      shooter.rotateShooter(0);
-    }
-    */
   }
 
   /** This function is called once when the robot is disabled. */

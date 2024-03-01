@@ -3,10 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -23,21 +21,17 @@ public class Shooter {
     private CANSparkMax ampMotor;
     private TalonFX rotMotor;
 
+
     private double testAngle;
 
     private TalonFXConfiguration shooterRotConfigs;
 
     private shooterState currentState;
-    private boolean rotUp;
     public enum shooterState {
-        ON,
         OFF,
-        AMP,
-        ROT,
-        CLIMB,
         RPS,
+        PERCENT,
         TEST
-
     }
 
     /**
@@ -88,14 +82,13 @@ public class Shooter {
         rotMotor.setPosition(0);
 
         currentState = shooterState.OFF;
-        rotUp = true;
         testAngle = 0;
     }
 
-    public void runRPS(double rps) {
+    private void runRPS(double rps) {
         final MotionMagicVelocityVoltage r_request = new MotionMagicVelocityVoltage(0);
         r_request.Acceleration = 0;
-        r_request.EnableFOC = false;
+        r_request.EnableFOC = true;
 
         shooterMotor1.setControl(r_request.withVelocity(rps));
         shooterMotor2.setControl(r_request.withVelocity(rps));
@@ -103,7 +96,7 @@ public class Shooter {
         //DriverStation.reportWarning(shooterMotor1.get, false);
     }
 
-    public void runMotionMagicAngle(double pos) {
+    private void runMotionMagicAngle(double pos) {
         if(pos>90||pos<0) {
             DriverStation.reportWarning("DONT DO THAT", true);
             rotMotor.set(0);
@@ -114,11 +107,11 @@ public class Shooter {
         }
     }
 
-    public double pivotSetpointCalc(double angle) {
+    private double pivotSetpointCalc(double angle) {
         return angle*ShooterConstants.angleConversion;
     }
 
-    public double photonAngle() {
+    private double photonAngle() {
         return photon.calAngle();
     }
 
@@ -130,21 +123,14 @@ public class Shooter {
      * sets speed for shooter
      * @param speed
      */
-    public void runShooter(double speed) {
+    private void runShooter(double speed) {
         shooterMotor1.set(speed);
         shooterMotor2.set(speed);
     }
 
-    public void rotateShooter(double speed) {  
+    private void rotateShooter(double speed) {  
         rotMotor.set(speed);
-    }
-
-    public void runMotionMagicRotations(double pos) {
-        final MotionMagicVoltage request = new MotionMagicVoltage(0);
-        rotMotor.setControl(request.withPosition(pos));
-    }
-
-  
+    }  
 
     /**
      * sets the intake state
@@ -152,14 +138,6 @@ public class Shooter {
      */
     public void setState(shooterState state) {
         currentState = state;
-    }
-
-    public void setDirection(boolean dir) {
-        rotUp = dir;
-    }
-
-    public boolean getDirection() {
-        return rotUp;
     }
     /**
      * gets the current intake state
@@ -169,62 +147,55 @@ public class Shooter {
         return currentState;
     }
 
+    public double[] getShooterVel() {
+        double[] shooterVelocities = {
+            shooterMotor1.getVelocity().getValueAsDouble(),
+            shooterMotor2.getVelocity().getValueAsDouble()};
+
+        return shooterVelocities;
+    }
+
+    public boolean readyToShoot() {
+        double[] shooterVelocities = getShooterVel();
+        double angle = rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion;
+        return shooterVelocities[0] > 83
+               && shooterVelocities[1] > 83
+              && (angle > photonAngle()-2 && angle < photonAngle()+2);
+    }
 
 
-    public void logging() {
+
+    private void logging() {
         SmartDashboard.putNumber("Shooter Speed", shooterMotor1.get());
-        SmartDashboard.putNumber("Shooter Angle", rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.angleConversion);
+        SmartDashboard.putNumber("Shooter Angle", rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion);
         testAngle = (Double) SmartDashboard.getNumber("Test Angle", 0.0);
         SmartDashboard.putNumber("Test Angle", testAngle);
+        SmartDashboard.putString("Shooter State", currentState.toString());
+
     }
 
     public void periodic() {
         logging();
 
         switch (currentState) {
-            case ON:
-                runShooter(ShooterConstants.shooterSpeed);
-                break;
 
-            case AMP:
-                runAmp(0.1);
-                //runMotionMagic(ShooterConstants.ampPos);
-                break;
-
-            case ROT:
-                if(getDirection()){
-                    rotateShooter(ShooterConstants.shooterRotSpeed);
-                }
-                else {
-                    rotateShooter(-ShooterConstants.shooterRotSpeed);
-                }
-                //runMotionMagic();
-                break;
-
-            case CLIMB:
-                /*if(photonAngle() > 25 || photonAngle() < 0){
-                    DriverStation.reportWarning("Photon angle to high or low", false);
-                    //runMotionMagic(0);
-                }*/
-                
-                runMotionMagicAngle(photonAngle());
-                
-                break;
-            case RPS:
-                runRPS(ShooterConstants.shooterRPS);
-                break;
-
-            case TEST:
-                runMotionMagicAngle(testAngle);
-                break;
-        
             case OFF:
                 runShooter(0);
                 runAmp(0);
                 runMotionMagicAngle(0);
-                //runRPS(0);
                 break;
-                
+
+            case RPS:
+                runRPS(ShooterConstants.shooterRPS);
+                runMotionMagicAngle(photonAngle());
+                break;
+
+            case PERCENT:
+                runShooter(ShooterConstants.shooterSpeed);
+
+            case TEST:
+                runMotionMagicAngle(testAngle);
+                break;
         }
     }
 
