@@ -6,6 +6,7 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -24,6 +25,8 @@ public class Photon {
     double skew = 0.0;
     double distance = 0.0;
     double calculatedAngle = 0.0;
+    
+    PIDController turnController = new PIDController(0.2, 0, 0.00007);
 
     public Photon() {
         camera = new PhotonCamera("plasmacam");
@@ -31,9 +34,20 @@ public class Photon {
     }
 
     public double calAngle() {
-        calculatedAngle = 72.79091*Math.pow(Math.E,-0.01126*distance);
+        calculatedAngle = 89.42801*Math.pow(Math.E,-0.01594*distance);
         return calculatedAngle;
     }
+
+    public double alignToTarget() {
+        /*return 0 if cant find target */
+        if(!hasTarget) {
+            return 0;
+        }
+        else{
+            return turnController.calculate(yaw, 7);
+        }
+    }
+
 
     public void logging() {
             SmartDashboard.putBoolean("hasTarget", hasTarget);
@@ -58,12 +72,12 @@ public class Photon {
         hasTarget = result.hasTargets();
 
         for(PhotonTrackedTarget target : result.targets) {
+            this.target = target;
             if (target.getFiducialId() == 7 || target.getFiducialId() == 4) {
-                this.target = target;
                 yaw = target.getYaw();
                 pitch = target.getPitch();
                 area = target.getArea();
-                skew = target.getSkew();
+                skew = target.getSkew(); 
                 distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.PhotonConstants.camHeight, Constants.PhotonConstants.tagHeight, Constants.PhotonConstants.camPitch, Units.degreesToRadians(result.getBestTarget().getPitch()))+PhotonConstants.distanceOffset;
                 distance = Units.metersToInches(distance);
             }

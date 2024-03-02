@@ -49,6 +49,8 @@ public class SwerveModule {
         talonConfigs.Slot0 = constants.DriveMotorGains;
         talonConfigs.TorqueCurrent.PeakForwardTorqueCurrent = constants.SlipCurrent;
         talonConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -constants.SlipCurrent;
+        talonConfigs.CurrentLimits.StatorCurrentLimit = 60;
+        talonConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
 
         m_driveMotor.getConfigurator().apply(talonConfigs);
 
@@ -56,6 +58,11 @@ public class SwerveModule {
 
         /* Undo changes for torqueCurrent */
         talonConfigs.TorqueCurrent = new TorqueCurrentConfigs();
+
+        /* change current limit for steer */
+        talonConfigs.CurrentLimits.StatorCurrentLimitEnable = false;
+        talonConfigs.CurrentLimits.SupplyCurrentLimit = 60;
+        talonConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         talonConfigs.Slot0 = constants.SteerMotorGains;
         // Modify configuration to use remote CANcoder fused
@@ -120,7 +127,7 @@ public class SwerveModule {
         var optimized = SwerveModuleState.optimize(state, m_internalState.angle);
 
         double angleToSetDeg = optimized.angle.getRotations();
-        m_steerMotor.setControl(m_angleSetter.withPosition(angleToSetDeg));
+        m_steerMotor.setControl(m_angleSetter.withPosition(angleToSetDeg).withEnableFOC(true));
         double velocityToSet = optimized.speedMetersPerSecond * m_driveRotationsPerMeter;
         m_driveMotor.setControl(m_velocitySetter.withVelocity(velocityToSet));
     }

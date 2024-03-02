@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.sql.Driver;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -31,7 +33,8 @@ public class Shooter {
         OFF,
         RPS,
         PERCENT,
-        TEST
+        TEST,
+        AMP
     }
 
     /**
@@ -97,7 +100,7 @@ public class Shooter {
     }
 
     private void runMotionMagicAngle(double pos) {
-        if(pos>90||pos<0) {
+        if(pos>105||pos<0) {
             DriverStation.reportWarning("DONT DO THAT", true);
             rotMotor.set(0);
         }
@@ -155,12 +158,18 @@ public class Shooter {
         return shooterVelocities;
     }
 
-    public boolean readyToShoot() {
+    public boolean readyToShoot(double desiredRPM) {
+        return readyToShoot(desiredRPM, photonAngle());
+    }
+
+    public boolean readyToShoot(double desiredRPM, double desiredAngle) {
         double[] shooterVelocities = getShooterVel();
         double angle = rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion;
-        return shooterVelocities[0] > 83
-               && shooterVelocities[1] > 83
-              && (angle > photonAngle()-2 && angle < photonAngle()+2);
+
+        boolean velocitysGood = shooterVelocities[0] > desiredRPM && shooterVelocities[1] > desiredRPM;
+        boolean anlgeGood = (angle > desiredAngle-2 && angle < desiredAngle+2);
+
+        return velocitysGood && anlgeGood;
     }
 
 
@@ -194,8 +203,12 @@ public class Shooter {
                 runShooter(ShooterConstants.shooterSpeed);
 
             case TEST:
+                runRPS(ShooterConstants.shooterRPS);
                 runMotionMagicAngle(testAngle);
                 break;
+            case AMP:
+                runRPS(ShooterConstants.ampRPS);
+                runMotionMagicAngle(ShooterConstants.ampAngle);
         }
     }
 

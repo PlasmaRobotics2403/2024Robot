@@ -204,11 +204,19 @@ public class Swerve {
         return m_odometry.getPoseMeters();
     }
 
+    public void resetOdometry() {
+        m_odometry.resetPosition(m_pigeon2.getRotation2d(), getSwervePositions(), new Pose2d());
+    }
+
     public double getSuccessfulDaqs() {
         return m_odometryThread.SuccessfulDaqs;
     }
 
     public double getFailedDaqs() {
         return m_odometryThread.FailedDaqs;
+    }
+
+    public void zeroHeading() {
+        m_pigeon2.reset();
     }
 }

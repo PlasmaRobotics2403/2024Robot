@@ -11,8 +11,12 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.autoUtil.AutoMode;
+import frc.lib.autoUtil.AutoModeRunner;
 import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.StateManager.robotState;
+import frc.robot.auto.modes.DriveAndTurn;
+import frc.robot.auto.modes.Nothing;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
@@ -46,14 +50,15 @@ public class Robot extends TimedRobot {
   Shooter shooter = new Shooter(photon);
   StateManager stateManager = new StateManager(intake, shooter, index);
 
+  AutoModeRunner autoModeRunner = new AutoModeRunner();
+  AutoMode[] autoModes = new AutoMode[20];
+
   Compressor compressor;
 
   PlasmaJoystick driver = new PlasmaJoystick(Constants.RobotConstants.driverJoystickID);
 
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private AutoMode m_autoSelected;
+  private final SendableChooser<AutoMode> m_chooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -61,8 +66,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
+    /* initialize autos */
+    for (AutoMode auto : autoModes) {
+      auto = new Nothing();
+    }
+    autoModes[1] = new DriveAndTurn(swerve);
+
+    m_chooser.setDefaultOption("Default Auto", autoModes[0]);
+    m_chooser.addOption("Test Auto", autoModes[1]);
     SmartDashboard.putData("Auto choices", m_chooser);
 
     compressor = new Compressor(21, PneumaticsModuleType.REVPH);  
@@ -98,11 +109,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-
+    swerve.zeroHeading();
+    swerve.resetOdometry();
 
     m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    System.out.println("Auto selected: " + m_autoSelected.toString());
+
+    autoModeRunner.chooseAutoMode(m_autoSelected);
+    autoModeRunner.start();   
   }
 
   /** This function is called periodically during autonomous. */
@@ -114,6 +128,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    autoModeRunner.stop();
     stateManager.setState(robotState.IDLE);
   }
 
@@ -122,11 +137,32 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     //creep mode
     if(driver.LT.isPressed()) {
-      swerve.driveFieldCentric(new ChassisSpeeds(driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.creepSpeed*1.2, -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.creepSpeed*1.2, -driver.RightX.getFilteredAxis()*Constants.SwerveConstants.creepSpeed*1.2));
+      swerve.driveFieldCentric(
+          new ChassisSpeeds(
+              driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
+              -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
+              -driver.RightX.getFilteredAxis()*Constants.SwerveConstants.creepTurn*Constants.SwerveConstants.maxAngularRate));
+    }
+    // align to target
+    else if(driver.R3.isPressed()) {
+      swerve.driveFieldCentric(
+          new ChassisSpeeds(
+              driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              photon.alignToTarget()));
     }
     //normal drive
     else{
-      swerve.driveFieldCentric(new ChassisSpeeds(driver.LeftY.getFilteredAxis()*1.2, -driver.LeftX.getFilteredAxis()*1.2, -driver.RightX.getFilteredAxis()*1.2));
+      swerve.driveFieldCentric(
+          new ChassisSpeeds(
+              driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              -driver.RightX.getFilteredAxis()*Constants.SwerveConstants.maxAngularRate));
+    }
+
+    // reset heading
+    if (driver.BACK.isPressed()) {
+      swerve.zeroHeading();
     }
 
     // setting controls for intake
@@ -139,6 +175,9 @@ public class Robot extends TimedRobot {
     }
     else if(driver.RT.isPressed()) {
       stateManager.setState(robotState.SHOOT);
+    }
+    else if(driver.A.isPressed()) {
+      stateManager.setState(robotState.AMP);
     }
     else{
       stateManager.setState(robotState.IDLE);

@@ -43,13 +43,15 @@ public class Constants {
         public static final int shooterMotor1ID = 2;
         public static final int shooterMotor2ID = 3;
         public static final double shooterSpeed = .9;
+        public static final double ampSpeed = .2;
         public static final double shooterRotSpeed = 0.1;
         public static final int ampMotorID = 4;
         public static final int rotMotorID = 5;
         public static final double shooterRPS = 85;
+        public static final double ampRPS = 3;
 
         //positions
-        public static final double ampPos = 0;
+        public static final double ampAngle = 103;
         public static final double climbPos = 0;
         public static final double pos = 25;
 
@@ -80,11 +82,12 @@ public class Constants {
     public class SwerveConstants {
 
         public static final double maxSpeed = 2; // desired top speed in meters per second;
-        public static final double maxAngularRate = 0.5 * Math.PI; // max angular velocity in rotations per second 
+        public static final double maxAngularRate = 1.5 * Math.PI; // max angular velocity in rotations per second 
 
         public static final double turnKp = 0;
         public static final double turnKd = 0;
-        public static final double creepSpeed = 0.5;
+        public static final double creepSpeed = 0.75;
+        public static final double creepTurn = 0.4;
     }
 
     public class PhotonConstants {
@@ -105,9 +108,9 @@ public class Constants {
 
     public class AutoConstants {
 
-        public static final double kPXController = 0;
-        public static final double kPYController = 0;
-        public static final double kPThetaController = 0;
+        public static final double kPXController = 0.0;
+        public static final double kPYController = 0.0;
+        public static final double kPThetaController = 0.0;
 
     }
 

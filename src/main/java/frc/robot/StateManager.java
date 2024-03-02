@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
@@ -21,7 +22,8 @@ public class StateManager {
         INTAKE,
         IDLE,
         SHOOT,
-        EJECT
+        EJECT,
+        AMP
     }
     public StateManager(Intake intake, Shooter shooter, Index index) {
         this.intake = intake;
@@ -99,9 +101,20 @@ public class StateManager {
                 intake.setState(intakeState.STOW);
 
             
-                if(shooter.readyToShoot()) {
+                if(shooter.readyToShoot(Constants.ShooterConstants.shooterRPS*.9)) {
                     index.setState(indexState.SHOOT);
                     hasGamePiece = false;
+                }
+                break;
+            case AMP:
+                shooter.setState(shooterState.AMP);
+                intake.setState(intakeState.STOW);
+                if(shooter.readyToShoot(Constants.ShooterConstants.ampRPS*.97, Constants.ShooterConstants.ampAngle)) {
+                    index.setState(indexState.SHOOT);
+                    hasGamePiece = false;
+                }
+                else{
+                    index.setState(indexState.OFF);
                 }
                 break;
         }
