@@ -29,7 +29,8 @@ public class Constants {
 
     public class ClimbConstants {
     
-        public static final int climbMotorID = 1;
+        public static final int leftClimbMotorID = 1;
+        public static final int rightClimbMotorID = 2;
         public static final double climbSpeed = 0.1;
     }
 
@@ -52,8 +53,8 @@ public class Constants {
 
         //positions
         public static final double ampAngle = 103;
-        public static final double climbPos = 0;
-        public static final double pos = 25;
+        public static final double climbPos = 103;
+        public static final double pos = 100;
 
         public static final double angleConversion = (35.0/54); //angle to rotation 70*(100/30)/360
         public static final double rotationConversion = (360.0/70*(100/30)) /10;
@@ -108,7 +109,7 @@ public class Constants {
 
     public class AutoConstants {
 
-        public static final double kPXController = 0.0;
+        public static final double kPXController = 0.05;
         public static final double kPYController = 0.0;
         public static final double kPThetaController = 0.0;
 

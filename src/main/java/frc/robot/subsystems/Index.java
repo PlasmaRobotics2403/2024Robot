@@ -14,6 +14,8 @@ public class Index {
     public CANSparkMax indexer;
     public DigitalInput shooterSensor;
 
+    public boolean sensorState;
+
     private indexState currentState;
     public enum indexState{
         INTAKE,
@@ -37,8 +39,8 @@ public class Index {
     }
 
 
-    public boolean getShooterSensor() {
-        return !shooterSensor.get();
+    public boolean  getShooterSensor() {
+        return sensorState;
     }
 
     public void setState(indexState state) {
@@ -57,7 +59,7 @@ public class Index {
 
     public void periodic() {
         logging();
-        
+        sensorState = !shooterSensor.get();
         switch (currentState) {
             case INTAKE:
                 runIndex(IndexConstants.passthroughSpeed);

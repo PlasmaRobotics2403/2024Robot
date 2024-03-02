@@ -174,6 +174,9 @@ public class Swerve {
         }
     }
 
+    public Pigeon2 getPigeon() {
+        return m_pigeon2;
+    }
     public void driveFullyFieldCentric(double xSpeeds, double ySpeeds, Rotation2d targetAngle) {
         var currentAngle = m_pigeon2.getRotation2d();
         double rotationalSpeed =

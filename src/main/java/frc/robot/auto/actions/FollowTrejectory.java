@@ -7,9 +7,12 @@ import com.choreo.lib.ChoreoControlFunction;
 import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.autoUtil.Action;
 import frc.robot.Constants;
@@ -29,24 +32,27 @@ public class FollowTrejectory implements Action{
     private ChoreoControlFunction controller;
     private Timer timer;
 
+    private Rotation2d robotRot;
+
     public FollowTrejectory(String pathName, Swerve swerve) {
-    ally = DriverStation.getAlliance();
+        ally = DriverStation.getAlliance();
     
-    if(ally.get() == Alliance.Red) {
-      isRedAlliance = true;
-    }
-    else {
-      isRedAlliance = false;
-    }
+        if(ally.get() == Alliance.Red) {
+            isRedAlliance = true;
+        }
+        else {
+            isRedAlliance = false;
+        }
         path = Choreo.getTrajectory(pathName);
         this.swerve = swerve;
 
-       xPid =  new PIDController(Constants.AutoConstants.kPXController, 0.0, 0.0);
-       yPid = new PIDController(Constants.AutoConstants.kPYController, 0.0, 0.0);
-       thetaPid = new PIDController(Constants.AutoConstants.kPThetaController, 0.0, 0.0);
-       controller = Choreo.choreoSwerveController(xPid, yPid, thetaPid);
+        robotRot = new Rotation2d(Math.toRadians(-90));
+        xPid =  new PIDController(Constants.AutoConstants.kPXController, 0.0, 0.0);
+        yPid = new PIDController(Constants.AutoConstants.kPYController, 0.0, 0.0);
+        thetaPid = new PIDController(Constants.AutoConstants.kPThetaController, 0.0, 0.0);
+        controller = Choreo.choreoSwerveController(xPid, yPid, thetaPid);
 
-       timer = new Timer();
+        timer = new Timer();
     }
 
     @Override
@@ -62,7 +68,10 @@ public class FollowTrejectory implements Action{
     @Override
     public void update() {
         speeds = controller.apply(swerve.getPoseMeters(), path.sample(timer.get(), isRedAlliance));
-        swerve.driveRobotCentric(speeds);
+        ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, robotRot);
+        DriverStation.reportWarning("Before Speeds: " + speeds.toString(), false);
+        DriverStation.reportWarning("After Speeds: " + robotSpeeds.toString(), false);
+        //swerve.driveRobotCentric(robotSpeeds);
     }
 
     @Override

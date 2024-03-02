@@ -18,6 +18,7 @@ public class Intake extends SubsystemBase{
 
     private intakeState currentState;
     private DigitalInput sensor;
+    private boolean sensorState;
     public enum intakeState {
         INTJECT,
         EJECT,
@@ -40,7 +41,7 @@ public class Intake extends SubsystemBase{
     }
 
     public boolean getSensor() {
-        return !sensor.get();
+        return sensorState;
     }
     /**
      * sets the speed of the roller motor
@@ -85,6 +86,7 @@ public class Intake extends SubsystemBase{
     public void periodic() {
         logging();
 
+        sensorState = !sensor.get();
         switch (currentState) {
             case STOW:
                 runIntake(0);

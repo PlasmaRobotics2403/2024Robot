@@ -16,7 +16,10 @@ import frc.lib.autoUtil.AutoModeRunner;
 import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.StateManager.robotState;
 import frc.robot.auto.modes.DriveAndTurn;
+import frc.robot.auto.modes.DriveForward;
+import frc.robot.auto.modes.DriveSideways;
 import frc.robot.auto.modes.Nothing;
+import frc.robot.auto.modes.Spin;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
@@ -45,10 +48,10 @@ public class Robot extends TimedRobot {
     TunerConstants.BackLeft, 
     TunerConstants.BackRight);
 
-  Climb climb = new Climb();
+  Climb climb = new Climb(swerve.getPigeon());
   Photon photon = new Photon();
   Shooter shooter = new Shooter(photon);
-  StateManager stateManager = new StateManager(intake, shooter, index);
+  StateManager stateManager = new StateManager(intake, shooter, index, climb);
 
   AutoModeRunner autoModeRunner = new AutoModeRunner();
   AutoMode[] autoModes = new AutoMode[20];
@@ -71,9 +74,16 @@ public class Robot extends TimedRobot {
       auto = new Nothing();
     }
     autoModes[1] = new DriveAndTurn(swerve);
+    autoModes[2] = new DriveForward(swerve);
+    autoModes[3] = new DriveSideways(swerve);
+    autoModes[4] = new Spin(swerve);
 
-    m_chooser.setDefaultOption("Default Auto", autoModes[0]);
+    m_chooser.setDefaultOption("Nothing Auto", autoModes[0]);
     m_chooser.addOption("Test Auto", autoModes[1]);
+    m_chooser.addOption("Forward Drive Auto", autoModes[2]);
+    m_chooser.addOption("Strafe Auto", autoModes[3]);
+    m_chooser.addOption("Spin Auto", autoModes[4]);
+
     SmartDashboard.putData("Auto choices", m_chooser);
 
     compressor = new Compressor(21, PneumaticsModuleType.REVPH);  
@@ -170,6 +180,9 @@ public class Robot extends TimedRobot {
     if(driver.RB.isPressed()) {
       stateManager.setState(robotState.INTAKE);
     }
+    else if(driver.X.isPressed()) {
+      stateManager.setState(robotState.STATICSHOOT);
+    }
     else if(driver.B.isPressed()) {
       stateManager.setState(robotState.EJECT);
     }
@@ -179,19 +192,14 @@ public class Robot extends TimedRobot {
     else if(driver.A.isPressed()) {
       stateManager.setState(robotState.AMP);
     }
-    else{
-      stateManager.setState(robotState.IDLE);
-    }
-
-    // setting controls for climb
-    if(driver.dPad.getPOV() == 0) {
-      climb.setState(Climb.climbState.UP);
+    else if(driver.dPad.getPOV() == 0) {
+      stateManager.setState(robotState.CLIMB_HOOKS_UP);
     }
     else if(driver.dPad.getPOV() == 180) {
-      climb.setState(Climb.climbState.DOWN);
+      stateManager.setState(robotState.CLIMB_HOOKS_DOWN);
     }
     else{
-        climb.setState(Climb.climbState.NOTMOVING);
+      stateManager.setState(robotState.IDLE);
     }
     
   }
