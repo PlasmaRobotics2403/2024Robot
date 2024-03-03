@@ -155,6 +155,8 @@ public class StateManager {
                 if(shooter.readyToShoot(Constants.ShooterConstants.ampRPS*.97, Constants.ShooterConstants.ampAngle)) {
                     index.setState(indexState.SHOOT);
                     hasGamePiece = false;
+                    gamePieceInPos = false;
+
                 }
                 else{
                     index.setState(indexState.OFF);

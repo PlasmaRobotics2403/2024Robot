@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoControlFunction;
 import com.choreo.lib.ChoreoTrajectory;
+import com.choreo.lib.ChoreoTrajectoryState;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -67,11 +68,18 @@ public class FollowTrejectory implements Action{
 
     @Override
     public void update() {
-        speeds = controller.apply(swerve.getPoseMeters(), path.sample(timer.get(), isRedAlliance));
-        ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, robotRot);
-        DriverStation.reportWarning("Before Speeds: " + speeds.toString(), false);
-        DriverStation.reportWarning("After Speeds: " + robotSpeeds.toString(), false);
+        /* current code */
+        //speeds = controller.apply(swerve.getPoseMeters(), path.sample(timer.get(), isRedAlliance));
+        //ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, robotRot);
+        //DriverStation.reportWarning("Before Speeds: " + speeds.toString(), false);
+        //DriverStation.reportWarning("After Speeds: " + robotSpeeds.toString(), false);
         //swerve.driveRobotCentric(robotSpeeds);
+
+        Pose2d currentPose = swerve.getPoseMeters();
+        ChoreoTrajectoryState state = path.sample(timer.get(), isRedAlliance);
+        speeds = controller.apply(currentPose, state);
+        ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, currentPose.getRotation());
+        swerve.driveRobotCentric(robotSpeeds);
     }
 
     @Override

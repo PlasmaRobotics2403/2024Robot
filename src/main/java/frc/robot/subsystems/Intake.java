@@ -94,8 +94,8 @@ public class Intake extends SubsystemBase{
                 break;
 
             case INTJECT:
-                runIntake(IntakeConstants.rollerSpeed);
                 extendIntake();
+                runIntake(IntakeConstants.rollerSpeed);
                 break;
                 
             case EJECT:
