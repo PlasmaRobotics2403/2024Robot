@@ -11,6 +11,8 @@ import frc.robot.subsystems.Climb.climbState;
 import frc.robot.subsystems.Index.indexState;
 import frc.robot.subsystems.Intake.intakeState;
 import frc.robot.subsystems.Shooter.shooterState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class StateManager {
     private Intake intake;

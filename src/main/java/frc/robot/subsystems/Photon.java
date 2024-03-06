@@ -34,7 +34,7 @@ public class Photon {
     }
 
     public double calAngle() {
-        calculatedAngle = 89.42801*Math.pow(Math.E,-0.01594*distance);
+        calculatedAngle = 12164.65722*Math.pow(distance,-1.41800);
         return calculatedAngle;
     }
 

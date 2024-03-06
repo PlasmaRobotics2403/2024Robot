@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,6 +27,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
@@ -42,6 +46,8 @@ public class Robot extends TimedRobot {
   // subsystems
   Intake intake = new Intake();
   Index index = new Index();
+  LEDs leds = new LEDs();
+  int hue = 0;
   Swerve swerve = new Swerve(TunerConstants.DrivetrainConstants,
     TunerConstants.FrontLeft,
     TunerConstants.FrontRight,
@@ -105,6 +111,8 @@ public class Robot extends TimedRobot {
     photon.periodic();
     index.periodic();
     stateManager.periodic();
+    leds.setHSV(hue, 255, 225);
+
   }
 
   /**
@@ -178,7 +186,7 @@ public class Robot extends TimedRobot {
     // setting controls for intake
 
     if(driver.RB.isPressed()) {
-      stateManager.setState(robotState.INTAKE);
+      stateManager.setState(robotState.SHOOT);
     }
     else if(driver.X.isPressed()) {
       stateManager.setState(robotState.STATICSHOOT);
@@ -187,7 +195,7 @@ public class Robot extends TimedRobot {
       stateManager.setState(robotState.EJECT);
     }
     else if(driver.RT.isPressed()) {
-      stateManager.setState(robotState.SHOOT);
+      stateManager.setState(robotState.INTAKE);
     }
     else if(driver.A.isPressed()) {
       stateManager.setState(robotState.AMP);
@@ -210,7 +218,17 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    Optional<Alliance> ally = DriverStation.getAlliance();
+
+    if(ally.get() == Alliance.Red && DriverStation.isDSAttached()) {
+        hue = 0;
+      }
+      else if(ally.get() == Alliance.Blue && DriverStation.isDSAttached()) {
+        hue = 130;
+      }
+      
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override
