@@ -54,6 +54,7 @@ public class FollowTrejectory implements Action{
         controller = Choreo.choreoSwerveController(xPid, yPid, thetaPid);
 
         timer = new Timer();
+        swerve.setOdometry(path.getInitialPose());
     }
 
     @Override
@@ -78,8 +79,9 @@ public class FollowTrejectory implements Action{
         Pose2d currentPose = swerve.getPoseMeters();
         ChoreoTrajectoryState state = path.sample(timer.get(), isRedAlliance);
         speeds = controller.apply(currentPose, state);
-        ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, currentPose.getRotation());
-        swerve.driveRobotCentric(robotSpeeds);
+        swerve.driveRobotCentric(speeds);
+
+        DriverStation.reportWarning("Before Speeds: " + speeds.toString(), false);
     }
 
     @Override

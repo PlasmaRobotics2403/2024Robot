@@ -6,13 +6,13 @@ import frc.lib.autoUtil.AutoModeEndedException;
 import frc.robot.auto.actions.FollowTrejectory;
 import frc.robot.subsystems.Swerve;
 
-public class DriveSideways extends AutoMode {
+public class DriveY extends AutoMode {
     private Swerve swerve;
 	private String path;
 
-	public DriveSideways(Swerve swerve) {
+	public DriveY(Swerve swerve) {
 		this.swerve = swerve;
-		path = "driveSideways";
+		path = "driveY";
 	}
 
 

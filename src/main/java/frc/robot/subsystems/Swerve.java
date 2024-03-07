@@ -74,9 +74,9 @@ public class Swerve {
     private void logging() {
         //SmartDashboard.putNumber("Successful Daqs", m_odometryThread.getSuccessfulDaqs());
         //SmartDashboard.putNumber("Failed Daqs", m_odometryThread.getFailedDaqs());
-        //SmartDashboard.putNumber("X Pos", m_odometry.getPoseMeters().getX());
-        //SmartDashboard.putNumber("Y Pos", m_odometry.getPoseMeters().getY());
-        //SmartDashboard.putNumber("Angle", m_odometry.getPoseMeters().getRotation().getDegrees());
+        SmartDashboard.putNumber("X Pos", m_odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Y Pos", m_odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("Angle", m_odometry.getPoseMeters().getRotation().getDegrees());
         //SmartDashboard.putNumber("Odometry Loop Time", m_odometryThread.getTime());
     }
 
@@ -211,6 +211,10 @@ public class Swerve {
         m_odometry.resetPosition(m_pigeon2.getRotation2d(), getSwervePositions(), new Pose2d());
     }
 
+    public void setOdometry(Pose2d pose) {
+        m_odometry.resetPosition(m_pigeon2.getRotation2d(), getSwervePositions(), pose);
+    }
+
     public double getSuccessfulDaqs() {
         return m_odometryThread.SuccessfulDaqs;
     }
@@ -222,4 +226,5 @@ public class Swerve {
     public void zeroHeading() {
         m_pigeon2.reset();
     }
+
 }

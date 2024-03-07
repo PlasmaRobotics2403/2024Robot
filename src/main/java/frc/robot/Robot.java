@@ -19,8 +19,8 @@ import frc.lib.autoUtil.AutoModeRunner;
 import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.StateManager.robotState;
 import frc.robot.auto.modes.DriveAndTurn;
-import frc.robot.auto.modes.DriveForward;
-import frc.robot.auto.modes.DriveSideways;
+import frc.robot.auto.modes.DriveY;
+import frc.robot.auto.modes.DriveX;
 import frc.robot.auto.modes.Nothing;
 import frc.robot.auto.modes.Spin;
 import frc.robot.generated.TunerConstants;
@@ -80,14 +80,14 @@ public class Robot extends TimedRobot {
       auto = new Nothing();
     }
     autoModes[1] = new DriveAndTurn(swerve);
-    autoModes[2] = new DriveForward(swerve);
-    autoModes[3] = new DriveSideways(swerve);
+    autoModes[2] = new DriveY(swerve);
+    autoModes[3] = new DriveX(swerve);
     autoModes[4] = new Spin(swerve);
 
     m_chooser.setDefaultOption("Nothing Auto", autoModes[0]);
     m_chooser.addOption("Test Auto", autoModes[1]);
-    m_chooser.addOption("Forward Drive Auto", autoModes[2]);
-    m_chooser.addOption("Strafe Auto", autoModes[3]);
+    m_chooser.addOption("Y Auto", autoModes[2]);
+    m_chooser.addOption("X Auto", autoModes[3]);
     m_chooser.addOption("Spin Auto", autoModes[4]);
 
     SmartDashboard.putData("Auto choices", m_chooser);
@@ -129,6 +129,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     swerve.zeroHeading();
     swerve.resetOdometry();
+    swerve.seedFieldRelative();
 
     m_autoSelected = m_chooser.getSelected();
     System.out.println("Auto selected: " + m_autoSelected.toString());
@@ -157,25 +158,25 @@ public class Robot extends TimedRobot {
     if(driver.LT.isPressed()) {
       swerve.driveFieldCentric(
           new ChassisSpeeds(
-              driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
-              -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
-              -driver.RightX.getFilteredAxis()*Constants.SwerveConstants.creepTurn*Constants.SwerveConstants.maxAngularRate));
+              -driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
+              driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
+              driver.RightX.getFilteredAxis()*Constants.SwerveConstants.creepTurn*Constants.SwerveConstants.maxAngularRate));
     }
     // align to target
     else if(driver.R3.isPressed()) {
       swerve.driveFieldCentric(
           new ChassisSpeeds(
-              driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
-              -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
-              photon.alignToTarget()));
+              -driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              -photon.alignToTarget()));
     }
     //normal drive
     else{
       swerve.driveFieldCentric(
           new ChassisSpeeds(
-              driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
-              -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
-              -driver.RightX.getFilteredAxis()*Constants.SwerveConstants.maxAngularRate));
+              -driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              driver.RightX.getFilteredAxis()*Constants.SwerveConstants.maxAngularRate));
     }
 
     // reset heading
