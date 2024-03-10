@@ -1,15 +1,20 @@
 package frc.robot;
 
+import com.revrobotics.ColorSensorV3.LEDCurrent;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
+import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Climb.climbState;
 import frc.robot.subsystems.Index.indexState;
 import frc.robot.subsystems.Intake.intakeState;
+import frc.robot.subsystems.LEDs.LEDState;
 import frc.robot.subsystems.Shooter.shooterState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -19,6 +24,8 @@ public class StateManager {
     private Shooter shooter;
     private Index index;
     private Climb climb;
+    private LEDs leds;
+    private Photon photon;
 
     private boolean hasGamePiece;
     private boolean gamePieceInPos;
@@ -33,12 +40,15 @@ public class StateManager {
         STATICSHOOT,
         CLIMB_HOOKS_UP,
         CLIMB_HOOKS_DOWN
+
      }
-    public StateManager(Intake intake, Shooter shooter, Index index, Climb climb) {
+    public StateManager(Intake intake, Shooter shooter, Index index, Climb climb, LEDs leds, Photon photon) {
         this.intake = intake;
         this.shooter = shooter;
         this.index = index;
         this.climb = climb;
+        this.leds = leds;
+        this.photon = photon;
 
         currentState = robotState.IDLE;
         hasGamePiece = false;
@@ -62,6 +72,15 @@ public class StateManager {
 
     public void periodic() {
         logging();
+        if(gamePieceInPos) {
+            leds.setState(LEDState.HASPEICE);
+        }
+        else if(photon.isAligned()) {
+            leds.setState(LEDState.ALLIGNED);
+        }
+        else if(hasGamePiece == false) {
+            leds.setState(LEDState.NOPEICE);
+        }
         switch (currentState) {
             case IDLE:
                 climb.setState(climbState.OFF);
@@ -173,6 +192,8 @@ public class StateManager {
             case CLIMB_HOOKS_DOWN:
                 shooter.setState(shooterState.CLIMB);
                 climb.setState(climbState.HOOKS_DOWN_PERCENT);
+                intake.setState(intakeState.STOW);
+                index.setState(indexState.OFF);
                 break;
         }
     }

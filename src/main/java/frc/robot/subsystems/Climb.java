@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import javax.swing.text.Position;
 
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -10,19 +12,24 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.DifferentialMechanism;
 import com.ctre.phoenix6.mechanisms.DifferentialMechanism.DifferentialPigeon2Source;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
+import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimbConstants;
-import frc.robot.generated.TunerConstants;;
+import frc.robot.generated.TunerConstants;
 
 public class Climb {
     private TalonFX leftClimbMotor;
     private TalonFX rightClimbMotor;
-    private climbState currentState;
     private DifferentialMechanism diffMech;
-    private Pigeon2 pigeon2;
-    private DigitalInput limitSwitch;
+
+    private climbState currentState;
+
+    private DigitalInput leftLimitSwitch;
+    private DigitalInput rightLimitSwitch;
+
     public enum climbState {
         HOOKS_UP_PERCENT,
         HOOKS_DOWN_PERCENT,
@@ -35,16 +42,23 @@ public class Climb {
      * constructer for climb
      */
     public Climb(Pigeon2 pigeon2) {
-        this.pigeon2 = pigeon2;
         leftClimbMotor = new TalonFX(ClimbConstants.leftClimbMotorID, "swerve");
         rightClimbMotor = new TalonFX(ClimbConstants.rightClimbMotorID, "swerve");
+
+        leftClimbMotor.setPosition(0);
+        rightClimbMotor.setPosition(0);
+
+        leftClimbMotor.setInverted(true);
+        rightClimbMotor.setInverted(false);
+
         currentState = climbState.OFF;
 
         leftClimbMotor.setNeutralMode(NeutralModeValue.Brake);
         rightClimbMotor.setNeutralMode(NeutralModeValue.Brake);
 
         diffMech = new DifferentialMechanism(rightClimbMotor, leftClimbMotor, true, pigeon2, DifferentialPigeon2Source.Roll);
-        limitSwitch = new DigitalInput(3);
+        leftLimitSwitch = new DigitalInput(3);
+        rightLimitSwitch = new DigitalInput(2);
 
         diffMech.applyConfigs();
     }
@@ -54,6 +68,21 @@ public class Climb {
      * @param speed
      */
     public void runClimb(double leftSpeed, double rightSpeed) {
+        if(!leftLimitSwitch.get() && leftSpeed < 0){
+            leftSpeed = 0;
+            leftClimbMotor.setPosition(0);
+        }
+        else if (leftClimbMotor.getRotorPosition().getValueAsDouble() > 72) {
+            leftSpeed = 0;
+        }
+
+        if(!rightLimitSwitch.get() && rightSpeed < 0) {
+            rightSpeed = 0;
+            rightClimbMotor.setPosition(0);
+        }
+        else if (rightClimbMotor.getRotorPosition().getValueAsDouble() > 72) {
+            rightSpeed = 0;
+        }
         leftClimbMotor.set(leftSpeed);
         rightClimbMotor.set(rightSpeed);
     }
@@ -63,11 +92,12 @@ public class Climb {
     }
 
     public boolean climbRaised() {
-        return !limitSwitch.get();
+        return leftClimbMotor.getRotorPosition().getValueAsDouble() > 5;
+        //return !limitSwitch.get();
     }
 
     private void diffController(double speed) {
-        VoltageOut averageRequest = new VoltageOut(12.0*speed);
+        VoltageOut averageRequest = new VoltageOut(-12.0*speed);
         averageRequest.EnableFOC = true;
         PositionVoltage differentialRequest = new PositionVoltage(0);
         differentialRequest.EnableFOC = true;
@@ -93,10 +123,15 @@ public class Climb {
 
 
     public void logging() {
-        
+        SmartDashboard.putString("Climb State", currentState.toString());
+        SmartDashboard.putNumber("Left Climb Pos", leftClimbMotor.getRotorPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Right Climb Pos", rightClimbMotor.getRotorPosition().getValueAsDouble());
+        SmartDashboard.putBoolean("Left Limit Swit", !leftLimitSwitch.get());
+        SmartDashboard.putBoolean("Right Limit Swit", !rightLimitSwitch.get());
     }
 
     public void periodic() {
+        logging();
       switch (currentState) {
         case HOOKS_UP_PERCENT:
             runClimb(ClimbConstants.climbSpeed);

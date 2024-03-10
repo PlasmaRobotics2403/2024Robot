@@ -1,17 +1,16 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.IndexConstants;
 
 public class Index {
 
-    public CANSparkMax indexer;
+    public TalonFX indexer; 
     public DigitalInput shooterSensor;
 
     public boolean sensorState;
@@ -26,16 +25,21 @@ public class Index {
     }
    public Index() {
 
-        indexer = new CANSparkMax(IndexConstants.passthroughID, MotorType.kBrushless);
+        indexer = new TalonFX(IndexConstants.passthroughID);
         shooterSensor  = new DigitalInput(IndexConstants.shooterSensorID);
 
         indexer.setInverted(false);
-        indexer.setIdleMode(IdleMode.kBrake);
+        indexer.setNeutralMode(NeutralModeValue.Brake);
+        //TODO set current limiting on indexer motor
+
         currentState = indexState.OFF;
     }
 
     private void runIndex(double speed) {
-        indexer.set(speed);
+        DutyCycleOut request = new DutyCycleOut(speed);
+        request.EnableFOC = true;
+        indexer.setControl(request);
+        
     }
 
 

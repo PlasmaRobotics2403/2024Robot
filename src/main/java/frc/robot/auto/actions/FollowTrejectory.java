@@ -23,8 +23,6 @@ public class FollowTrejectory implements Action{
 
     private ChoreoTrajectory path;
     private Swerve swerve;
-    private Optional<Alliance> ally;
-    private boolean isRedAlliance = true;
 
     private PIDController xPid;
     private PIDController yPid;
@@ -33,21 +31,10 @@ public class FollowTrejectory implements Action{
     private ChoreoControlFunction controller;
     private Timer timer;
 
-    private Rotation2d robotRot;
-
     public FollowTrejectory(String pathName, Swerve swerve) {
-        ally = DriverStation.getAlliance();
-    
-        if(ally.get() == Alliance.Red) {
-            isRedAlliance = true;
-        }
-        else {
-            isRedAlliance = false;
-        }
         path = Choreo.getTrajectory(pathName);
         this.swerve = swerve;
 
-        robotRot = new Rotation2d(Math.toRadians(-90));
         xPid =  new PIDController(Constants.AutoConstants.kPXController, 0.0, 0.0);
         yPid = new PIDController(Constants.AutoConstants.kPYController, 0.0, 0.0);
         thetaPid = new PIDController(Constants.AutoConstants.kPThetaController, 0.0, 0.0);
@@ -77,11 +64,9 @@ public class FollowTrejectory implements Action{
         //swerve.driveRobotCentric(robotSpeeds);
 
         Pose2d currentPose = swerve.getPoseMeters();
-        ChoreoTrajectoryState state = path.sample(timer.get(), isRedAlliance);
+        ChoreoTrajectoryState state = path.sample(timer.get(), false);
         speeds = controller.apply(currentPose, state);
         swerve.driveRobotCentric(speeds);
-
-        DriverStation.reportWarning("Before Speeds: " + speeds.toString(), false);
     }
 
     @Override

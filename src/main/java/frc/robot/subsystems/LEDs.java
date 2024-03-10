@@ -4,25 +4,42 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 public class LEDs {
-    private AddressableLED LED;
+    private AddressableLED LED   ;
     private AddressableLEDBuffer LEDBuffer;
     // Store what the last hue of the first pixel is
     private int firstPixelHue;
 
-    public enum LEDStripStatus {
-        OFF,
-        ON
+    public enum Color {
+        RED(255,0,0),
+        GREEN(0,255,0),
+        BLUE(0,0,255);
+
+        int r;
+        int g;
+        int b;
+
+        private Color (int r, int g, int b) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+        }
     }
 
-    public LEDStripStatus stripStatus;
+    public enum LEDState {
+        ALLIGNED,
+        HASPEICE,
+        NOPEICE;
+    }
+
+    public LEDState currentState;
 
     public LEDs() {
         LED = new AddressableLED(0);
-        LEDBuffer = new AddressableLEDBuffer(92);
+        LEDBuffer = new AddressableLEDBuffer(27);
     
         LED.setLength(LEDBuffer.getLength());
 
-        stripStatus = LEDStripStatus.ON;
+        currentState = LEDState.NOPEICE;
     
         LED.setData(LEDBuffer);
         LED.start();
@@ -110,22 +127,36 @@ public class LEDs {
     public void sendData() {
         LED.setData(LEDBuffer);
     }
-
-
     /**
-     * pauses the leds
+     * sets the leds state
+     * @param state
      */
-    public void stopLED() {
-        LED.stop();
-        stripStatus = LEDStripStatus.OFF;
+    public void setState(LEDState state) {
+        currentState = state;
+    }
+    /**
+     * gets the current leds state
+     * @return currentState
+     */
+    public LEDState getState() {
+        return currentState;
     }
 
-    
-    /**
-     * animates the leds
-     */
-    public void startLED() {
-        LED.start();
-        stripStatus = LEDStripStatus.ON;
+    public void periodic() {
+        switch (currentState) {
+            case ALLIGNED:
+                setRGB(Color.GREEN.r, Color.GREEN.g, Color.GREEN.b);
+                break;
+
+            case HASPEICE:
+                setRGB(Color.BLUE.r, Color.BLUE.g, Color.BLUE.b); 
+                break;
+            
+            case NOPEICE:
+                Rainbow();
+                //setHSV(120, 255, 125);
+                //setRGB(Color.RED.r, Color.RED.g, Color.RED.b);
+                break;
+        }
     }
 }

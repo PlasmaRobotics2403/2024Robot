@@ -20,7 +20,6 @@ public class Shooter {
 
     private TalonFX shooterMotor1;
     private TalonFX shooterMotor2;
-    private CANSparkMax ampMotor;
     private TalonFX rotMotor;
 
 
@@ -47,7 +46,6 @@ public class Shooter {
 
         shooterMotor1 = new TalonFX(ShooterConstants.shooterMotor1ID);
         shooterMotor2 = new TalonFX(ShooterConstants.shooterMotor2ID);
-        ampMotor = new CANSparkMax(ShooterConstants.ampMotorID, MotorType.kBrushless);
         rotMotor = new TalonFX(ShooterConstants.rotMotorID);
 
         // shooter velocity motion magic config
@@ -120,10 +118,6 @@ public class Shooter {
         return photon.calAngle();
     }
 
-    public void runAmp(double speed) {
-        ampMotor.set(speed);
-    }
-
     /**
      * sets speed for shooter
      * @param speed
@@ -192,29 +186,36 @@ public class Shooter {
 
             case OFF:
                 runShooter(0);
-                runAmp(0);
                 runMotionMagicAngle(0);
                 break;
+
             case CLIMB:
                 runMotionMagicAngle(ShooterConstants.climbPos);
+                break;
+
             case RPS:
                 runRPS(ShooterConstants.shooterRPS);
                 runMotionMagicAngle(photonAngle());
                 break;
+                
             case STATICSHOOT:
                 runRPS(ShooterConstants.shooterRPS);
                 runMotionMagicAngle(ShooterConstants.pos);
                 break;
+
             case PERCENT:
                 runShooter(ShooterConstants.shooterSpeed);
                 break;
+
             case TEST:
                 runRPS(ShooterConstants.shooterRPS);
                 runMotionMagicAngle(testAngle);
                 break;
+
             case AMP:
                 runRPS(ShooterConstants.ampRPS);
                 runMotionMagicAngle(ShooterConstants.ampAngle);
+                break;
         }
     }
 

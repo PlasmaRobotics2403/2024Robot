@@ -48,6 +48,10 @@ public class Photon {
         }
     }
 
+    public boolean isAligned() {
+        return yaw >= 4 && yaw <= 10;
+       }
+
 
     public void logging() {
             SmartDashboard.putBoolean("hasTarget", hasTarget);
@@ -59,6 +63,7 @@ public class Photon {
                 SmartDashboard.putNumber("camPitch", pitch);
                 SmartDashboard.putNumber("camArea", area);
                 SmartDashboard.putNumber("camSkew", skew);
+                SmartDashboard.putBoolean("Is Alligned", isAligned());
                 
                 SmartDashboard.putNumber("Distance to apriltag", distance);
                 SmartDashboard.putNumber("Calculated Angle for Shoooter", calAngle());

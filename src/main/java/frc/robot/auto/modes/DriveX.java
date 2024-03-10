@@ -15,8 +15,6 @@ public class DriveX extends AutoMode {
 		path = "driveX";
 	}
 
-
-
 	@Override
 	protected void routine() throws AutoModeEndedException {
 		DriverStation.reportWarning("Starting Auto run", false);

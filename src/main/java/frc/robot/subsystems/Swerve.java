@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.Pigeon2Configurator;
+import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -41,7 +43,6 @@ public class Swerve {
         ModuleCount = modules.length;
 
         m_pigeon2 = new Pigeon2(driveTrainConstants.Pigeon2Id, driveTrainConstants.CANbusName);
-
         m_modules = new SwerveModule[ModuleCount];
         m_modulePositions = new SwerveModulePosition[ModuleCount];
         m_moduleLocations = new Translation2d[ModuleCount];
@@ -168,10 +169,7 @@ public class Swerve {
 
     public void driveFieldCentric(ChassisSpeeds speeds) {
         var roboCentric = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, m_pigeon2.getRotation2d());
-        var swerveStates = m_kinematics.toSwerveModuleStates(roboCentric);
-        for (int i = 0; i < ModuleCount; ++i) {
-            m_modules[i].apply(swerveStates[i]);
-        }
+        driveRobotCentric(roboCentric);
     }
 
     public Pigeon2 getPigeon() {

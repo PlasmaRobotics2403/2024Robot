@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.autoUtil.AutoMode;
@@ -23,6 +24,8 @@ import frc.robot.auto.modes.DriveY;
 import frc.robot.auto.modes.DriveX;
 import frc.robot.auto.modes.Nothing;
 import frc.robot.auto.modes.Spin;
+import frc.robot.auto.modes.TwoCenter;
+import frc.robot.auto.modes.TwoLeft;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
@@ -49,15 +52,15 @@ public class Robot extends TimedRobot {
   LEDs leds = new LEDs();
   int hue = 0;
   Swerve swerve = new Swerve(TunerConstants.DrivetrainConstants,
-    TunerConstants.FrontLeft,
     TunerConstants.FrontRight,
+    TunerConstants.FrontLeft,
     TunerConstants.BackLeft, 
     TunerConstants.BackRight);
 
   Climb climb = new Climb(swerve.getPigeon());
   Photon photon = new Photon();
   Shooter shooter = new Shooter(photon);
-  StateManager stateManager = new StateManager(intake, shooter, index, climb);
+  StateManager stateManager = new StateManager(intake, shooter, index, climb, leds, photon);
 
   AutoModeRunner autoModeRunner = new AutoModeRunner();
   AutoMode[] autoModes = new AutoMode[20];
@@ -79,16 +82,23 @@ public class Robot extends TimedRobot {
     for (AutoMode auto : autoModes) {
       auto = new Nothing();
     }
+
+    /* wait until robot connects to FMS */
+    do {
+      Timer.delay(.30);
+    } while(!DriverStation.isDSAttached());
+
     autoModes[1] = new DriveAndTurn(swerve);
     autoModes[2] = new DriveY(swerve);
     autoModes[3] = new DriveX(swerve);
     autoModes[4] = new Spin(swerve);
+    autoModes[5] = new TwoCenter(swerve, stateManager);
+    autoModes[6] = new TwoLeft(swerve, stateManager, photon);
+    
 
-    m_chooser.setDefaultOption("Nothing Auto", autoModes[0]);
-    m_chooser.addOption("Test Auto", autoModes[1]);
-    m_chooser.addOption("Y Auto", autoModes[2]);
-    m_chooser.addOption("X Auto", autoModes[3]);
-    m_chooser.addOption("Spin Auto", autoModes[4]);
+    m_chooser.setDefaultOption("Nothing Auto", autoModes[0]);   
+    m_chooser.addOption("Middle Auto (2)", autoModes[5]);
+    m_chooser.addOption("Left Auto (2)", autoModes[6]);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
@@ -111,7 +121,6 @@ public class Robot extends TimedRobot {
     photon.periodic();
     index.periodic();
     stateManager.periodic();
-    leds.setHSV(hue, 255, 225);
 
   }
 
@@ -127,10 +136,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    swerve.zeroHeading();
-    swerve.resetOdometry();
-    swerve.seedFieldRelative();
-
     m_autoSelected = m_chooser.getSelected();
     System.out.println("Auto selected: " + m_autoSelected.toString());
 
@@ -158,29 +163,30 @@ public class Robot extends TimedRobot {
     if(driver.LT.isPressed()) {
       swerve.driveFieldCentric(
           new ChassisSpeeds(
-              -driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
-              driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
-              driver.RightX.getFilteredAxis()*Constants.SwerveConstants.creepTurn*Constants.SwerveConstants.maxAngularRate));
+              driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
+              -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.creepSpeed,
+              -driver.RightX.getFilteredAxis()*Constants.SwerveConstants.creepTurn*Constants.SwerveConstants.maxAngularRate));
     }
     // align to target
-    else if(driver.R3.isPressed()) {
+    else if(driver.LB.isPressed()) {
       swerve.driveFieldCentric(
           new ChassisSpeeds(
-              -driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
-              driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
-              -photon.alignToTarget()));
+              driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              photon.alignToTarget()));
     }
     //normal drive
     else{
       swerve.driveFieldCentric(
           new ChassisSpeeds(
-              -driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
-              driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
-              driver.RightX.getFilteredAxis()*Constants.SwerveConstants.maxAngularRate));
+              driver.LeftY.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
+              -driver.RightX.getFilteredAxis()*Constants.SwerveConstants.maxAngularRate));
     }
 
     // reset heading
     if (driver.BACK.isPressed()) {
+
       swerve.zeroHeading();
     }
 
@@ -222,12 +228,7 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     Optional<Alliance> ally = DriverStation.getAlliance();
 
-    if(ally.get() == Alliance.Red && DriverStation.isDSAttached()) {
-        hue = 0;
-      }
-      else if(ally.get() == Alliance.Blue && DriverStation.isDSAttached()) {
-        hue = 130;
-      }
+
       
   }
 

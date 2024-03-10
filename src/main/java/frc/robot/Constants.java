@@ -10,7 +10,7 @@ public class Constants {
     
         public static final int rollerID = 1;
 
-        public static final double rollerSpeed = ;
+        public static final double rollerSpeed = 0.9;
         public static final int forwardChannelID = 0;
         public static final int backwardChannelID = 1;
     }
@@ -24,13 +24,12 @@ public class Constants {
         public static final double passthroughSpeed = 0.9;
         public static final double indexSpeed = 0.15;
 
-
     }
 
     public class ClimbConstants {
     
-        public static final int leftClimbMotorID = 1;
-        public static final int rightClimbMotorID = 2;
+        public static final int leftClimbMotorID = 9;
+        public static final int rightClimbMotorID = 10;
         public static final double climbSpeed = 0.1;
     }
 
@@ -109,7 +108,7 @@ public class Constants {
 
     public class AutoConstants {
 
-        public static final double kPXController = 0.06;
+        public static final double kPXController = 0.05;
         public static final double kPYController = 0.0;
         public static final double kPThetaController = 0.0;
 
