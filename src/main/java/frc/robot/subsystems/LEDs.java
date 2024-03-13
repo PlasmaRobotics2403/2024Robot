@@ -10,18 +10,18 @@ public class LEDs {
     private int firstPixelHue;
 
     public enum Color {
-        RED(255,0,0),
-        GREEN(0,255,0),
-        BLUE(0,0,255);
+        RED(0,255,128),
+        GREEN(60,255,128),
+        BLUE(130,255,128);
 
-        int r;
-        int g;
-        int b;
+        int h;
+        int s;
+        int v;
 
-        private Color (int r, int g, int b) {
-            this.r = r;
-            this.g = g;
-            this.b = b;
+        private Color (int h, int s, int v) {
+            this.h = h;
+            this.s = s;
+            this.v = v;
         }
     }
 
@@ -36,7 +36,6 @@ public class LEDs {
     public LEDs() {
         LED = new AddressableLED(0);
         LEDBuffer = new AddressableLEDBuffer(27);
-    
         LED.setLength(LEDBuffer.getLength());
 
         currentState = LEDState.NOPEICE;
@@ -59,6 +58,7 @@ public class LEDs {
           firstPixelHue %= 180;
 
           LED.setData(LEDBuffer);
+          LED.start();
     }
 
 
@@ -71,6 +71,9 @@ public class LEDs {
      */
     public void setHSV(int i, int hue, int saturation, int value) {
         LEDBuffer.setHSV(i, hue, saturation, value);
+        LED.setData(LEDBuffer);
+        LED.start();
+
     }
 
 
@@ -84,6 +87,10 @@ public class LEDs {
         for (int i = 0; i < getBufferLength(); i++) {
             LEDBuffer.setHSV(i, hue, saturation, value);
         }
+
+        LED.setData(LEDBuffer);
+        LED.start();
+
     }
 
 
@@ -96,6 +103,8 @@ public class LEDs {
      */
     public void setRGB(int i, int red, int green, int blue) {
         LEDBuffer.setRGB(i, red, green, blue);
+        LED.setData(LEDBuffer);
+        LED.start();
     }
 
 
@@ -108,6 +117,7 @@ public class LEDs {
     public void setRGB(int red, int green, int blue) {
         for (int i = 0; i < getBufferLength(); i++) {
             LEDBuffer.setRGB(i, red, green, blue);
+            
         }
     }
 
@@ -145,17 +155,16 @@ public class LEDs {
     public void periodic() {
         switch (currentState) {
             case ALLIGNED:
-                setRGB(Color.GREEN.r, Color.GREEN.g, Color.GREEN.b);
+                setHSV(Color.GREEN.h, Color.GREEN.s, Color.GREEN.v);
                 break;
 
             case HASPEICE:
-                setRGB(Color.BLUE.r, Color.BLUE.g, Color.BLUE.b); 
+                setHSV(Color.BLUE.h, Color.BLUE.s, Color.BLUE.v); 
                 break;
             
             case NOPEICE:
-                Rainbow();
-                //setHSV(120, 255, 125);
-                //setRGB(Color.RED.r, Color.RED.g, Color.RED.b);
+                setHSV(Color.RED.h, Color.RED.s, Color.RED.v);
+                //setHSV(0, 255, 128);
                 break;
         }
     }

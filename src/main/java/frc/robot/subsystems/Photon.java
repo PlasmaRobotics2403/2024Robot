@@ -33,11 +33,19 @@ public class Photon {
         calculatedAngle = 0;
     }
 
+    /**
+     * calculates the angle fok the shooter based off the camera
+     * @return
+     */
     public double calAngle() {
         calculatedAngle = 12164.65722*Math.pow(distance,-1.41800);
         return calculatedAngle;
     }
 
+    /**
+     * finds the offset for the robot to ajust to make a shot 
+     * @return
+     */
     public double alignToTarget() {
         /*return 0 if cant find target */
         if(!hasTarget) {
@@ -49,7 +57,7 @@ public class Photon {
     }
 
     public boolean isAligned() {
-        return yaw >= 4 && yaw <= 10;
+        return yaw >= 4 && yaw <= 10 && (target.getFiducialId() == 7 || target.getFiducialId() == 4);
        }
 
 

@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
 
   Compressor compressor;
 
+  boolean connectedToDriverStation = DriverStation.isDSAttached();
   PlasmaJoystick driver = new PlasmaJoystick(Constants.RobotConstants.driverJoystickID);
 
   private AutoMode m_autoSelected;
@@ -84,9 +85,12 @@ public class Robot extends TimedRobot {
     }
 
     /* wait until robot connects to FMS */
+    
     do {
       Timer.delay(.30);
-    } while(!DriverStation.isDSAttached());
+      connectedToDriverStation = DriverStation.isDSAttached();
+    }
+     while(!connectedToDriverStation);
 
     autoModes[1] = new DriveAndTurn(swerve);
     autoModes[2] = new DriveY(swerve);
@@ -120,8 +124,10 @@ public class Robot extends TimedRobot {
     shooter.periodic();
     photon.periodic();
     index.periodic();
+    leds.periodic();
     stateManager.periodic();
 
+    connectedToDriverStation = DriverStation.isDSAttached();
   }
 
   /**
@@ -228,7 +234,7 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     Optional<Alliance> ally = DriverStation.getAlliance();
 
-
+    
       
   }
 

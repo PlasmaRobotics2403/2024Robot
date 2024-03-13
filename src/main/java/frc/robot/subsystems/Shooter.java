@@ -21,10 +21,9 @@ public class Shooter {
     private TalonFX shooterMotor1;
     private TalonFX shooterMotor2;
     private TalonFX rotMotor;
-
-
     private double testAngle;
 
+    private TalonFXConfiguration currentConfigs;
     private TalonFXConfiguration shooterRotConfigs;
 
     private shooterState currentState;
@@ -83,6 +82,16 @@ public class Shooter {
 
         rotMotor.setNeutralMode(NeutralModeValue.Brake);
         rotMotor.setPosition(0);
+
+        //Current Limits
+        currentConfigs = new TalonFXConfiguration();
+
+        currentConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        currentConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        //rotMotor.getConfigurator().apply(currentConfigs);
+        //shooterMotor1.getConfigurator().apply(currentConfigs);
+        //shooterMotor2.getConfigurator().apply(currentConfigs);
 
         currentState = shooterState.OFF;
         testAngle = 0;

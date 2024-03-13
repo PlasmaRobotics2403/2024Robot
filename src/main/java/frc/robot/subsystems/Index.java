@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -12,7 +13,7 @@ public class Index {
 
     public TalonFX indexer; 
     public DigitalInput shooterSensor;
-
+    public TalonFXConfiguration configs;
     public boolean sensorState;
 
     private indexState currentState;
@@ -30,11 +31,23 @@ public class Index {
 
         indexer.setInverted(false);
         indexer.setNeutralMode(NeutralModeValue.Brake);
-        //TODO set current limiting on indexer motor
 
+        // current limiting
+        configs = new TalonFXConfiguration();
+
+        configs.CurrentLimits.StatorCurrentLimit = 60;
+        configs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        indexer.getConfigurator().apply(configs);
+
+        //initializes the indxer state
         currentState = indexState.OFF;
     }
 
+    /**
+     * runs the indexer 
+     * @param speed
+     */
     private void runIndex(double speed) {
         DutyCycleOut request = new DutyCycleOut(speed);
         request.EnableFOC = true;
@@ -42,15 +55,26 @@ public class Index {
         
     }
 
-
+    /**
+     * checks if the index sensor is realised
+     * @return
+     */
     public boolean  getShooterSensor() {
         return sensorState;
     }
 
+    /**
+     * sets the indexer state
+     * @param state
+     */
     public void setState(indexState state) {
         currentState = state;
     }
 
+    /**
+     * gets the indexer state
+     * @return
+     */
     public indexState getState() {
         return currentState;
     }

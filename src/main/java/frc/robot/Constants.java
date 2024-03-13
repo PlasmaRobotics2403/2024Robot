@@ -48,7 +48,7 @@ public class Constants {
         public static final int ampMotorID = 4;
         public static final int rotMotorID = 5;
         public static final double shooterRPS = 85;
-        public static final double ampRPS = 3;
+        public static final double ampRPS = 4.5;
 
         //positions
         public static final double ampAngle = 103;
@@ -81,7 +81,7 @@ public class Constants {
 
     public class SwerveConstants {
 
-        public static final double maxSpeed = 2; // desired top speed in meters per second;
+        public static final double maxSpeed = 5.5; // desired top speed in meters per second;
         public static final double maxAngularRate = 1.5 * Math.PI; // max angular velocity in rotations per second 
 
         public static final double turnKp = 0;

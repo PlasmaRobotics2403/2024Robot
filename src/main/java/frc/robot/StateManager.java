@@ -72,25 +72,26 @@ public class StateManager {
 
     public void periodic() {
         logging();
-        if(gamePieceInPos) {
-            leds.setState(LEDState.HASPEICE);
-        }
-        else if(photon.isAligned()) {
+        if(photon.isAligned() && hasGamePiece) {
             leds.setState(LEDState.ALLIGNED);
         }
-        else if(hasGamePiece == false) {
+        else if(hasGamePiece) {
+            leds.setState(LEDState.HASPEICE);
+        }
+        else if(!hasGamePiece) {
             leds.setState(LEDState.NOPEICE);
         }
+
         switch (currentState) {
             case IDLE:
                 climb.setState(climbState.OFF);
 
-                if(climb.climbRaised()) {
+                /*if(climb.climbRaised()) {
                     shooter.setState(shooterState.CLIMB);
-                }
-                else{
+                }*/
+                //else{
                     shooter.setState(shooterState.OFF);
-                }
+                //}
 
                 // game piece in position
                 if(gamePieceInPos) {

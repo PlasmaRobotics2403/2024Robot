@@ -6,9 +6,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -41,9 +39,11 @@ public class Intake extends SubsystemBase{
         currentState = intakeState.STOW;
     }
 
+
     public boolean getSensor() {
         return sensorState;
     }
+
     /**
      * sets the speed of the roller motor
      */
@@ -58,6 +58,7 @@ public class Intake extends SubsystemBase{
     public void setState(intakeState state) {
         currentState = state;
     }
+
     /**
      * gets the current intake state
      * @return currentState
@@ -66,10 +67,16 @@ public class Intake extends SubsystemBase{
         return currentState;
     }
 
+    /**
+     * sets the intake solenoid to open (which extends the intake)
+     */
     private void extendIntake() {
         intakeSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
+    /**
+     * sets the intake solenoid to close (which retracts the intake)
+     */
     private void retractIntake() {
         intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
     }

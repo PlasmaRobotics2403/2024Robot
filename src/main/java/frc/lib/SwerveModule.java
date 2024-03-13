@@ -12,6 +12,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -51,6 +53,7 @@ public class SwerveModule {
         talonConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -constants.SlipCurrent;
         talonConfigs.CurrentLimits.StatorCurrentLimit = 60;
         talonConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        talonConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         m_driveMotor.getConfigurator().apply(talonConfigs);
 
