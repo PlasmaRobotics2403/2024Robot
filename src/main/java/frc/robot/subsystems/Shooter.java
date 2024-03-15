@@ -1,18 +1,13 @@
 package frc.robot.subsystems;
 
-import java.sql.Driver;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
 import frc.robot.Constants.ShooterConstants;;
 
 public class Shooter {
@@ -134,11 +129,7 @@ public class Shooter {
     private void runShooter(double speed) {
         shooterMotor1.set(speed);
         shooterMotor2.set(speed);
-    }
-
-    private void rotateShooter(double speed) {  
-        rotMotor.set(speed);
-    }  
+    } 
 
     /**
      * sets the intake state

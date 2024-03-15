@@ -44,6 +44,7 @@ public class TwoCenter extends AutoMode {
 		runAction(new AutoRobotState(manager, robotState.SHOOT));
         runAction(new Wait(1));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
+        runAction(new Wait(0.5));
         runAction(new FollowTrejectory(selectedPath, swerve));
         runAction(new AutoRobotState(manager, robotState.SHOOT));
         runAction(new Wait(1));

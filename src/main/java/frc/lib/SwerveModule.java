@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -42,17 +43,15 @@ public class SwerveModule {
         m_cancoder = new CANcoder(constants.CANcoderId, canbusName);
 
         TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
-
+        
           talonConfigs.MotorOutput.Inverted = 
                 constants.DriveMotorInverted
                         ? InvertedValue.Clockwise_Positive
                         : InvertedValue.CounterClockwise_Positive;
 
         talonConfigs.Slot0 = constants.DriveMotorGains;
-        talonConfigs.TorqueCurrent.PeakForwardTorqueCurrent = constants.SlipCurrent;
-        talonConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -constants.SlipCurrent;
-        talonConfigs.CurrentLimits.StatorCurrentLimit = 60;
-        talonConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        talonConfigs.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+        talonConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -60;
         talonConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         m_driveMotor.getConfigurator().apply(talonConfigs);
@@ -63,6 +62,8 @@ public class SwerveModule {
         talonConfigs.TorqueCurrent = new TorqueCurrentConfigs();
 
         /* change current limit for steer */
+        talonConfigs.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+        talonConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -60;
         talonConfigs.CurrentLimits.StatorCurrentLimitEnable = false;
         talonConfigs.CurrentLimits.SupplyCurrentLimit = 60;
         talonConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;

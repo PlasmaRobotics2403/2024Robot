@@ -1,8 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.Climb.climbState;
-import frc.robot.subsystems.Shooter.shooterState;
 
 public class Constants {
     
@@ -30,7 +28,7 @@ public class Constants {
     
         public static final int leftClimbMotorID = 9;
         public static final int rightClimbMotorID = 10;
-        public static final double climbSpeed = 0.1;
+        public static final double climbSpeed = 0.3;
     }
 
     public class RobotConstants {
