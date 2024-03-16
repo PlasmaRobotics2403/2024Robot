@@ -9,6 +9,7 @@ import frc.lib.autoUtil.AutoMode;
 import frc.lib.autoUtil.AutoModeEndedException;
 import frc.robot.StateManager;
 import frc.robot.StateManager.robotState;
+import frc.robot.auto.actions.AutoAllign;
 import frc.robot.auto.actions.AutoRobotState;
 import frc.robot.auto.actions.FollowTrejectory;
 import frc.robot.auto.actions.Wait;
@@ -41,12 +42,16 @@ public class TwoCenter extends AutoMode {
             selectedPath = pathRed;
         }
 
-		runAction(new AutoRobotState(manager, robotState.SHOOT));
+		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
+        runAction(new Wait(1));
+        runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
         runAction(new Wait(1));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
-        runAction(new Wait(0.5));
+        runAction(new Wait(1));
         runAction(new FollowTrejectory(selectedPath, swerve));
-        runAction(new AutoRobotState(manager, robotState.SHOOT));
+        runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
+        runAction(new Wait(1));
+        runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
         runAction(new Wait(1));
         runAction(new AutoRobotState(manager, robotState.IDLE));
 		DriverStation.reportWarning("Ending Auto run", false);

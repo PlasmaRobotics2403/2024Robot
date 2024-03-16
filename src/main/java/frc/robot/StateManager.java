@@ -35,7 +35,9 @@ public class StateManager {
         STATICSHOOT,
         CLIMB_HOOKS_UP,
         CLIMB_HOOKS_DOWN,
-        CLIMBFALSE
+        CLIMBFALSE,
+        INDEXAUTO,
+        SHOOTAUTO
 
      }
     public StateManager(Intake intake, Shooter shooter, Index index, Climb climb, LEDs leds, Photon photon) {
@@ -64,7 +66,6 @@ public class StateManager {
         SmartDashboard.putString("Robot State", currentState.toString());
         SmartDashboard.putBoolean("Has game peice", hasGamePiece);
         SmartDashboard.putBoolean("Game peice in position", gamePieceInPos);
-
     }
 
     public void periodic() {
@@ -194,6 +195,13 @@ public class StateManager {
                 break;
             case CLIMBFALSE:
                 climb.setState(climbState.CLIMBFALSE);
+                break;
+            case SHOOTAUTO:
+                shooter.setState(shooterState.RPS);
+                intake.setState(intakeState.STOW);
+                break;
+            case INDEXAUTO:
+                index.setState(indexState.SHOOT);
         }
     }
 }

@@ -155,6 +155,7 @@ public class Shooter {
     }
 
     public boolean readyToShoot(double desiredRPM) {
+        DriverStation.reportWarning("Ready to shoot", false);
         return readyToShoot(desiredRPM, photonAngle());
     }
 

@@ -33,7 +33,9 @@ public class Shoot extends AutoMode {
 	@Override
 	protected void routine() throws AutoModeEndedException {
 		DriverStation.reportWarning("Starting Auto run", false);
-		runAction(new AutoRobotState(manager, robotState.SHOOT));
+		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
+		runAction(new Wait(1));
+		runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
 		runAction(new Wait(1));
 		runAction(new AutoRobotState(manager, robotState.IDLE));
 
