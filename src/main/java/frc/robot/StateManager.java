@@ -199,9 +199,13 @@ public class StateManager {
             case SHOOTAUTO:
                 shooter.setState(shooterState.RPS);
                 intake.setState(intakeState.STOW);
+                hasGamePiece = false;
+                gamePieceInPos = false;
                 break;
             case INDEXAUTO:
                 index.setState(indexState.SHOOT);
+                hasGamePiece = false;
+                gamePieceInPos = false;
         }
     }
 }

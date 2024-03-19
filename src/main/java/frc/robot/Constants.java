@@ -28,7 +28,7 @@ public class Constants {
     
         public static final int leftClimbMotorID = 9;
         public static final int rightClimbMotorID = 10;
-        public static final double climbSpeed = 0.3;
+        public static final double climbSpeed = 0.45;
     }
 
     public class RobotConstants {
