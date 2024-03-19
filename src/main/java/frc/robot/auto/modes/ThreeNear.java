@@ -16,34 +16,40 @@ import frc.robot.auto.actions.Wait;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Swerve;
 
-public class TwoLeft extends AutoMode {
+public class ThreeNear extends AutoMode {
     private Swerve swerve;
     private StateManager manager;
-	private String pathRed;
-    private String pathBlue;
+	private String pathRed1;
+    private String pathRed2;
+    private String pathBlue1;
+    private String pathBlue2;
     private Photon photon;
 
-	public TwoLeft(Swerve swerve, StateManager manager, Photon photon) {
+	public ThreeNear(Swerve swerve, StateManager manager, Photon photon) {
 		this.swerve = swerve;
         this.manager = manager;
         this.photon = photon;
 
-		pathBlue = "TwoLeftBlue";
-        pathRed = "TwoLeftRed";
-    
+		pathBlue1 = "TwoNearBlue";
+        pathRed1 = "TwoNearRed";
+        pathBlue1 = "TwoNearBlue";
+        pathRed1 = "TwoNearRed";
 	}
 
 	@Override
 	protected void routine() throws AutoModeEndedException {
 		DriverStation.reportWarning("Starting Auto run", false);
 
-        String selectedPath;
+        String selectedPath1;
+        String selectedPath2;
 
         if(DriverStation.getAlliance().get() == Alliance.Blue) {
-            selectedPath = pathBlue;
+            selectedPath1 = pathBlue1;
+            selectedPath2 = pathBlue2;
         }
         else {
-            selectedPath = pathRed;
+            selectedPath1 = pathRed1;
+            selectedPath2 = pathRed2;
         }
 
         runAction(new AutoAllign(swerve, photon));
@@ -52,7 +58,7 @@ public class TwoLeft extends AutoMode {
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
         runAction(new Wait(1));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
-        runAction(new FollowTrejectory(selectedPath, swerve));
+        runAction(new FollowTrejectory(selectedPath1, swerve));
         runAction(new Wait(1));
         runAction(new AutoAllign(swerve, photon));
         runAction(new Wait(1));
@@ -60,8 +66,15 @@ public class TwoLeft extends AutoMode {
         runAction(new Wait(1));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
         runAction(new Wait(1));
+        runAction(new AutoRobotState(manager, robotState.INTAKE));
+        runAction(new FollowTrejectory(selectedPath2, swerve));
+        runAction(new AutoAllign(swerve, photon));
+        runAction(new Wait(1));
+        runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
+        runAction(new Wait(1));
+        runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
+        runAction(new Wait(1));
         runAction(new AutoRobotState(manager, robotState.IDLE));
-
 		DriverStation.reportWarning("Ending Auto run", false);
 
 	}
