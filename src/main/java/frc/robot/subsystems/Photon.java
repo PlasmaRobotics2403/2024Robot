@@ -37,7 +37,7 @@ public class Photon {
      * @return
      */
     public double calAngle() {
-        calculatedAngle = 15170.12722*Math.pow(distance,-1.41800); //12170.12722
+        calculatedAngle = 14170.12722*Math.pow(distance,-1.41800); //12170.12722
         return calculatedAngle;
     }
 
