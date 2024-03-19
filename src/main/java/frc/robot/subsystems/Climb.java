@@ -19,6 +19,8 @@ public class Climb {
 
     private climbState currentState;
     
+    private boolean climbing;
+    
     private TalonFXConfiguration currentConfigs;
 
     private DigitalInput leftLimitSwitch;
@@ -29,7 +31,8 @@ public class Climb {
         HOOKS_DOWN_PERCENT,
         HOOKS_UP_DIFF,
         HOOKS_DOWN_DIFF,
-        OFF
+        OFF,
+        CLIMBFALSE
     }
 
     /**
@@ -64,6 +67,7 @@ public class Climb {
         leftLimitSwitch = new DigitalInput(3);
         rightLimitSwitch = new DigitalInput(2);
 
+        climbing = false;
         diffMech.applyConfigs();
     }
 
@@ -76,7 +80,7 @@ public class Climb {
             leftSpeed = 0;
             leftClimbMotor.setPosition(0);
         }
-        else if (leftClimbMotor.getRotorPosition().getValueAsDouble() > 72 && leftSpeed > 0) {
+        else if (leftClimbMotor.getRotorPosition().getValueAsDouble() > 86 && leftSpeed > 0) {
             leftSpeed = 0;
         }
 
@@ -84,7 +88,7 @@ public class Climb {
             rightSpeed = 0;
             rightClimbMotor.setPosition(0);
         }
-        else if (rightClimbMotor.getRotorPosition().getValueAsDouble() > 72 && rightSpeed > 0) {
+        else if (rightClimbMotor.getRotorPosition().getValueAsDouble() > 86 && rightSpeed > 0) {
             rightSpeed = 0;
         }
         leftClimbMotor.set(leftSpeed);
@@ -105,8 +109,11 @@ public class Climb {
      */
     public boolean climbRaised() {
         if(leftClimbMotor.getRotorPosition().getValueAsDouble() > 5 
-        || !leftLimitSwitch.get() || !rightLimitSwitch.get() 
+        || leftLimitSwitch.get() || rightLimitSwitch.get() 
         || leftClimbMotor.getRotorPosition().getValueAsDouble() > 5) {
+            return true;
+        }
+        else if(climbing) {
             return true;
         }
         else {
@@ -157,12 +164,14 @@ public class Climb {
       switch (currentState) {
         case HOOKS_UP_PERCENT:
             runClimb(ClimbConstants.climbSpeed);
+            climbing = true;
             break;
         case HOOKS_DOWN_PERCENT:
             runClimb(-ClimbConstants.climbSpeed);
             break;
         case HOOKS_UP_DIFF:
             diffController(0.5);
+            climbing = true;
             break;
         case HOOKS_DOWN_DIFF:
             diffController(-0.5);
@@ -170,6 +179,8 @@ public class Climb {
         case OFF:
             runClimb(0);
             break;
+        case CLIMBFALSE:
+            climbing = false;
       }
     }
 }

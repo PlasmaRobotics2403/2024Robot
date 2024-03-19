@@ -1,9 +1,5 @@
 package frc.robot;
 
-import com.revrobotics.ColorSensorV3.LEDCurrent;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
@@ -16,7 +12,6 @@ import frc.robot.subsystems.Index.indexState;
 import frc.robot.subsystems.Intake.intakeState;
 import frc.robot.subsystems.LEDs.LEDState;
 import frc.robot.subsystems.Shooter.shooterState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class StateManager {
@@ -39,7 +34,10 @@ public class StateManager {
         AMP,
         STATICSHOOT,
         CLIMB_HOOKS_UP,
-        CLIMB_HOOKS_DOWN
+        CLIMB_HOOKS_DOWN,
+        CLIMBFALSE,
+        INDEXAUTO,
+        SHOOTAUTO
 
      }
     public StateManager(Intake intake, Shooter shooter, Index index, Climb climb, LEDs leds, Photon photon) {
@@ -53,6 +51,7 @@ public class StateManager {
         currentState = robotState.IDLE;
         hasGamePiece = false;
         gamePieceInPos = false;
+        climb.setState(climbState.CLIMBFALSE);
     }
 
     public void setState(robotState state) {
@@ -67,7 +66,6 @@ public class StateManager {
         SmartDashboard.putString("Robot State", currentState.toString());
         SmartDashboard.putBoolean("Has game peice", hasGamePiece);
         SmartDashboard.putBoolean("Game peice in position", gamePieceInPos);
-
     }
 
     public void periodic() {
@@ -86,12 +84,12 @@ public class StateManager {
             case IDLE:
                 climb.setState(climbState.OFF);
 
-                /*if(climb.climbRaised()) {
+                if(climb.climbRaised()) {
                     shooter.setState(shooterState.CLIMB);
-                }*/
-                //else{
+                }
+                else{
                     shooter.setState(shooterState.OFF);
-                //}
+                }
 
                 // game piece in position
                 if(gamePieceInPos) {
@@ -163,7 +161,6 @@ public class StateManager {
             case SHOOT:
                 shooter.setState(shooterState.RPS);
                 intake.setState(intakeState.STOW);
-
             
                 if(shooter.readyToShoot(Constants.ShooterConstants.shooterRPS*.9)) {
                     index.setState(indexState.SHOOT);
@@ -196,6 +193,15 @@ public class StateManager {
                 intake.setState(intakeState.STOW);
                 index.setState(indexState.OFF);
                 break;
+            case CLIMBFALSE:
+                climb.setState(climbState.CLIMBFALSE);
+                break;
+            case SHOOTAUTO:
+                shooter.setState(shooterState.RPS);
+                intake.setState(intakeState.STOW);
+                break;
+            case INDEXAUTO:
+                index.setState(indexState.SHOOT);
         }
     }
 }

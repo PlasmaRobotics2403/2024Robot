@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import org.opencv.core.Mat;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -26,7 +25,7 @@ public class Photon {
     double distance = 0.0;
     double calculatedAngle = 0.0;
     
-    PIDController turnController = new PIDController(0.2, 0, 0.00007);
+    PIDController turnController = new PIDController(0.15, 0, 0.00007);
 
     public Photon() {
         camera = new PhotonCamera("plasmacam");
@@ -38,7 +37,7 @@ public class Photon {
      * @return
      */
     public double calAngle() {
-        calculatedAngle = 12164.65722*Math.pow(distance,-1.41800);
+        calculatedAngle = 15170.12722*Math.pow(distance,-1.41800); //12170.12722
         return calculatedAngle;
     }
 
@@ -57,7 +56,7 @@ public class Photon {
     }
 
     public boolean isAligned() {
-        return yaw >= 4 && yaw <= 10 && (target.getFiducialId() == 7 || target.getFiducialId() == 4);
+            return yaw >= 4 && yaw <= 10;
        }
 
 

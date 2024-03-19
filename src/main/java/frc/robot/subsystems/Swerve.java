@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.configs.Pigeon2Configurator;
-import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -142,7 +140,7 @@ public class Swerve {
                 m_field.setRobotPose(m_odometry.getPoseMeters());
             }
         }
-        
+        /*
         public double getTime() {
             return averageLoopTime;
         }
@@ -153,7 +151,7 @@ public class Swerve {
 
         public int getFailedDaqs() {
             return FailedDaqs;
-        }
+        }*/
     }
 
     private SwerveModulePosition[] getSwervePositions() {

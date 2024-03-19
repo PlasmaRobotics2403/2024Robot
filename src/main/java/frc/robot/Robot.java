@@ -4,12 +4,9 @@
 
 package frc.robot;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,6 +20,7 @@ import frc.robot.auto.modes.DriveAndTurn;
 import frc.robot.auto.modes.DriveY;
 import frc.robot.auto.modes.DriveX;
 import frc.robot.auto.modes.Nothing;
+import frc.robot.auto.modes.Shoot;
 import frc.robot.auto.modes.Spin;
 import frc.robot.auto.modes.TwoCenter;
 import frc.robot.auto.modes.TwoLeft;
@@ -34,7 +32,6 @@ import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Shooter.shooterState;
 
 
 
@@ -98,11 +95,13 @@ public class Robot extends TimedRobot {
     autoModes[4] = new Spin(swerve);
     autoModes[5] = new TwoCenter(swerve, stateManager);
     autoModes[6] = new TwoLeft(swerve, stateManager, photon);
+    autoModes[7] = new Shoot(stateManager, photon);
     
 
     m_chooser.setDefaultOption("Nothing Auto", autoModes[0]);   
     m_chooser.addOption("Middle Auto (2)", autoModes[5]);
     m_chooser.addOption("Left Auto (2)", autoModes[6]);
+    m_chooser.addOption("Shoot", autoModes[7]);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 
@@ -219,6 +218,9 @@ public class Robot extends TimedRobot {
     else if(driver.dPad.getPOV() == 180) {
       stateManager.setState(robotState.CLIMB_HOOKS_DOWN);
     }
+    else if(driver.Y.isPressed()) {
+      stateManager.setState(robotState.CLIMBFALSE);
+    }
     else{
       stateManager.setState(robotState.IDLE);
     }
@@ -231,12 +233,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {
-    Optional<Alliance> ally = DriverStation.getAlliance();
-
-    
-      
-  }
+  public void disabledPeriodic() {}
 
   /** This function is called once when test mode is enabled. */
   @Override
