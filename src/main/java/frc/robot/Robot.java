@@ -79,8 +79,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     /* initialize autos */
-    for (AutoMode auto : autoModes) {
-      auto = new Nothing();
+    for (int i = 0; i < 20; i++) {
+      autoModes[i] = new Nothing();
     }
 
     /* wait until robot connects to FMS */
@@ -102,12 +102,12 @@ public class Robot extends TimedRobot {
     autoModes[9] = new Shoot(stateManager, photon);
     
 
-    m_chooser.setDefaultOption("Nothing Auto", autoModes[0]);   
+    m_chooser.setDefaultOption("Nothing Auto", autoModes[0]); 
+    m_chooser.addOption("Shoot", autoModes[9]);
     m_chooser.addOption("Middle Auto (2)", autoModes[5]);
     m_chooser.addOption("Far Auto (2)", autoModes[6]);
     m_chooser.addOption("Near Auto (2)", autoModes[7]);
     m_chooser.addOption("Near Auto (3)", autoModes[8]);
-    m_chooser.addOption("Shoot", autoModes[9]);
 
     SmartDashboard.putData("Auto choices", m_chooser);
 

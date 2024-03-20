@@ -76,6 +76,7 @@ public class Swerve {
         SmartDashboard.putNumber("X Pos", m_odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Y Pos", m_odometry.getPoseMeters().getY());
         SmartDashboard.putNumber("Angle", m_odometry.getPoseMeters().getRotation().getDegrees());
+        SmartDashboard.putBoolean("Robot Faseing Forward", isFasingForward());
         //SmartDashboard.putNumber("Odometry Loop Time", m_odometryThread.getTime());
     }
 
@@ -217,6 +218,11 @@ public class Swerve {
 
     public double getFailedDaqs() {
         return m_odometryThread.FailedDaqs;
+    }
+
+    public boolean isFasingForward() {
+        double angle = m_odometry.getPoseMeters().getRotation().getDegrees() % 360;
+        return Math.abs(angle) < 90;
     }
 
     public void zeroHeading() {

@@ -32,6 +32,7 @@ public class FollowTrejectory implements Action{
     private Timer timer;
 
     public FollowTrejectory(String pathName, Swerve swerve) {
+        DriverStation.reportWarning(pathName, false);
         path = Choreo.getTrajectory(pathName);
         this.swerve = swerve;
 

@@ -25,7 +25,7 @@ public class Photon {
     double distance = 0.0;
     double calculatedAngle = 0.0;
     
-    PIDController turnController = new PIDController(0.15, 0, 0.00007);
+    PIDController turnController = new PIDController(0.20, 0, 0.0156);
 
     public Photon() {
         camera = new PhotonCamera("plasmacam");
@@ -37,7 +37,7 @@ public class Photon {
      * @return
      */
     public double calAngle() {
-        calculatedAngle = 14170.12722*Math.pow(distance,-1.41800); //12170.12722
+        calculatedAngle = 7072.78099*Math.pow(distance,-1.27315); 
         return calculatedAngle;
     }
 
@@ -51,12 +51,12 @@ public class Photon {
             return 0;
         }
         else{
-            return turnController.calculate(yaw, 7);
+            return turnController.calculate(yaw, 4);
         }
     }
 
     public boolean isAligned() {
-            return yaw >= 4 && yaw <= 10;
+            return yaw >= 2.5 && yaw <= 5.5;
        }
 
 
@@ -92,6 +92,15 @@ public class Photon {
                 skew = target.getSkew(); 
                 distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.PhotonConstants.camHeight, Constants.PhotonConstants.tagHeight, Constants.PhotonConstants.camPitch, Units.degreesToRadians(result.getBestTarget().getPitch()))+PhotonConstants.distanceOffset;
                 distance = Units.metersToInches(distance);
+            }
+            else if(target.getFiducialId() == 3 || target.getFiducialId() == 8){
+            }
+            else{
+                yaw = 1;
+                pitch = -1;
+                area = -1;
+                skew = -1;
+                distance = -1;
             }
         }
         logging();

@@ -46,7 +46,6 @@ public class TwoFar extends AutoMode {
             selectedPath = pathRed;
         }
 
-        runAction(new AutoAllign(swerve, photon));
 		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
         runAction(new Wait(1));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));

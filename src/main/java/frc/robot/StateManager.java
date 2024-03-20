@@ -95,6 +95,7 @@ public class StateManager {
                 if(gamePieceInPos) {
                     index.setState(indexState.OFF);
                     intake.setState(intakeState.STOW);
+                    hasGamePiece = true;
                 }
                 else if(index.getShooterSensor()) {
                     intake.setState(intakeState.STOW);

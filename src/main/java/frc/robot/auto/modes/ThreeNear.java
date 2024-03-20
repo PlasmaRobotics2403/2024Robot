@@ -30,10 +30,10 @@ public class ThreeNear extends AutoMode {
         this.manager = manager;
         this.photon = photon;
 
-		pathBlue1 = "TwoNearBlue";
-        pathRed1 = "TwoNearRed";
-        pathBlue1 = "TwoNearBlue";
-        pathRed1 = "TwoNearRed";
+		pathBlue1 = "ThreeNearBlue1";
+        pathRed1 = "ThreeNearRed1";
+        pathBlue2 = "ThreeNearBlue2";
+        pathRed2 = "ThreeNearRed2";
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class ThreeNear extends AutoMode {
             selectedPath2 = pathRed2;
         }
 
-        runAction(new AutoAllign(swerve, photon));
+        //runAction(new AutoAllign(swerve, photon));
 		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
         runAction(new Wait(1));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));

@@ -92,7 +92,7 @@ public class Constants {
         public static final double camHeight = Units.inchesToMeters(24.5);
         public static final double tagHeight = Units.inchesToMeters(61.125);
         public static final double camPitch = Units.degreesToRadians(25);
-        public static final double distanceOffset = Units.inchesToMeters(10);
+        public static final double distanceOffset = Units.inchesToMeters(10.5);
 
         public static final double angleSlope = -0.0462;
         public static final double angleIntersept = 15.851;
