@@ -16,7 +16,7 @@ import frc.robot.auto.actions.Wait;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Swerve;
 
-public class ThreeNear extends AutoMode {
+public class ThreeFar extends AutoMode {
     private Swerve swerve;
     private StateManager manager;
 	private String pathRed1;
@@ -25,15 +25,15 @@ public class ThreeNear extends AutoMode {
     private String pathBlue2;
     private Photon photon;
 
-	public ThreeNear(Swerve swerve, StateManager manager, Photon photon) {
+	public ThreeFar(Swerve swerve, StateManager manager, Photon photon) {
 		this.swerve = swerve;
         this.manager = manager;
         this.photon = photon;
 
-		pathBlue1 = "ThreeNearBlue1";
-        pathRed1 = "ThreeNearRed1";
-        pathBlue2 = "ThreeNearBlue2";
-        pathRed2 = "ThreeNearRed2";
+		pathBlue1 = "ThreeFarBlue1";
+        pathRed1 = "ThreeFarRed1";
+        pathBlue2 = "ThreeFarBlue2";
+        pathRed2 = "ThreeFarRed2";
 	}
 
 	@Override
@@ -66,6 +66,8 @@ public class ThreeNear extends AutoMode {
 		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
         runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
+        runAction(new Wait(0.5));
+        runAction(new AutoAllign(swerve, photon));
         runAction(new Wait(1));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
         runAction(new FollowTrejectory(selectedPath2, swerve));
