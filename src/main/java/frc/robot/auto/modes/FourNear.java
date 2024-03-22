@@ -32,12 +32,12 @@ public class FourNear extends AutoMode {
         this.manager = manager;
         this.photon = photon;
 
-		pathBlue1 = "ThreeNearBlue1";
-        pathRed1 = "ThreeNearRed1";
-        pathBlue2 = "ThreeNearBlue2";
-        pathRed2 = "ThreeNearRed2";
-        pathBlue3 = "ThreeNearBlue3";
-        pathRed3 = "ThreeNearRed3";
+		pathBlue1 = "FourNearBlue1";
+        pathRed1 = "FourNearRed1";
+        pathBlue2 = "FourNearBlue2";
+        pathRed2 = "FourNearRed2";
+        pathBlue3 = "FourNearBlue3";
+        pathRed3 = "FourNearRed3";
 	}
 
 	@Override
@@ -62,12 +62,12 @@ public class FourNear extends AutoMode {
 
         //runAction(new AutoAllign(swerve, photon));
 		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
         runAction(new FollowTrejectory(selectedPath1, swerve));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
         runAction(new AutoAllign(swerve, photon));
         runAction(new Wait(0.5));
 		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
@@ -75,26 +75,26 @@ public class FourNear extends AutoMode {
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
         runAction(new Wait(0.5));
         runAction(new AutoAllign(swerve, photon));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
         runAction(new FollowTrejectory(selectedPath2, swerve));
         runAction(new AutoAllign(swerve, photon));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
-        runAction(new Wait(1));
-        runAction(new AutoRobotState(manager, robotState.IDLE));
+        runAction(new Wait(0.5));
         runAction(new FollowTrejectory(selectedPath3, swerve));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
         runAction(new AutoAllign(swerve, photon));
         runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
-        runAction(new Wait(1));
+        runAction(new Wait(0.5));
+        runAction(new AutoRobotState(manager, robotState.IDLE));
 		DriverStation.reportWarning("Ending Auto run", false);
 
 	}

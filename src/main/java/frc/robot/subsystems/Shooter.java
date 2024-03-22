@@ -28,7 +28,8 @@ public class Shooter {
         PERCENT,
         TEST,
         AMP,
-        STATICSHOOT,
+        STATICSHOOTFRONT,
+        STATICSHOOTBACK,
         CLIMB
     }
 
@@ -199,11 +200,13 @@ public class Shooter {
                 runMotionMagicAngle(photonAngle());
                 break;
                 
-            case STATICSHOOT:
+            case STATICSHOOTBACK:
                 runRPS(ShooterConstants.shooterRPS);
-                runMotionMagicAngle(ShooterConstants.pos);
+                runMotionMagicAngle(ShooterConstants.staticBack);
                 break;
-
+            case STATICSHOOTFRONT:
+                runRPS(ShooterConstants.shooterRPS);
+                runMotionMagicAngle(ShooterConstants.staticFront);
             case PERCENT:
                 runShooter(ShooterConstants.shooterSpeed);
                 break;

@@ -7,6 +7,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Climb.climbState;
 import frc.robot.subsystems.Index.indexState;
 import frc.robot.subsystems.Intake.intakeState;
@@ -21,6 +22,7 @@ public class StateManager {
     private Climb climb;
     private LEDs leds;
     private Photon photon;
+    private Swerve swerve;
 
     private boolean hasGamePiece;
     private boolean gamePieceInPos;
@@ -40,13 +42,14 @@ public class StateManager {
         SHOOTAUTO
 
      }
-    public StateManager(Intake intake, Shooter shooter, Index index, Climb climb, LEDs leds, Photon photon) {
+    public StateManager(Intake intake, Shooter shooter, Index index, Climb climb, LEDs leds, Photon photon, Swerve swerve) {
         this.intake = intake;
         this.shooter = shooter;
         this.index = index;
         this.climb = climb;
         this.leds = leds;
         this.photon = photon;
+        this.swerve = swerve;
 
         currentState = robotState.IDLE;
         hasGamePiece = false;
@@ -115,11 +118,19 @@ public class StateManager {
 
                 break;
             case STATICSHOOT:
-                shooter.setState(shooterState.STATICSHOOT);
+                double angle;
+                if(swerve.isFasingForward()) {
+                    shooter.setState(shooterState.STATICSHOOTFRONT);
+                    angle = Constants.ShooterConstants.staticFront;
+                }
+                else {
+                    shooter.setState(shooterState.STATICSHOOTBACK);
+                    angle = Constants.ShooterConstants.staticBack;
+                }
                 intake.setState(intakeState.STOW);
 
             
-                if(shooter.readyToShoot(Constants.ShooterConstants.shooterRPS*.9,Constants.ShooterConstants.pos)) {
+                if(shooter.readyToShoot(Constants.ShooterConstants.shooterRPS*.9, angle)) {
                     index.setState(indexState.SHOOT);
                     hasGamePiece = false;
                     gamePieceInPos = false;

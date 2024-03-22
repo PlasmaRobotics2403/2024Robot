@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
   Climb climb = new Climb(swerve.getPigeon());
   Photon photon = new Photon();
   Shooter shooter = new Shooter(photon);
-  StateManager stateManager = new StateManager(intake, shooter, index, climb, leds, photon);
+  StateManager stateManager = new StateManager(intake, shooter, index, climb, leds, photon, swerve);
 
   AutoModeRunner autoModeRunner = new AutoModeRunner();
   AutoMode[] autoModes = new AutoMode[20];

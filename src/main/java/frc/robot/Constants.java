@@ -51,7 +51,8 @@ public class Constants {
         //positions
         public static final double ampAngle = 103;
         public static final double climbPos = 103;
-        public static final double pos = 100;
+        public static final double staticFront = 37;
+        public static final double staticBack = 100;
 
         public static final double angleConversion = (35.0/54); //angle to rotation 70*(100/30)/360
         public static final double rotationConversion = (360.0/70*(100/30)) /10;

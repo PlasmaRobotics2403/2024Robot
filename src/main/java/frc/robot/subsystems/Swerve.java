@@ -77,6 +77,7 @@ public class Swerve {
         SmartDashboard.putNumber("Y Pos", m_odometry.getPoseMeters().getY());
         SmartDashboard.putNumber("Angle", m_odometry.getPoseMeters().getRotation().getDegrees());
         SmartDashboard.putBoolean("Robot Faseing Forward", isFasingForward());
+        SmartDashboard.putNumber("Field Angle", m_odometry.getPoseMeters().getRotation().getDegrees() % 360);
         //SmartDashboard.putNumber("Odometry Loop Time", m_odometryThread.getTime());
     }
 
