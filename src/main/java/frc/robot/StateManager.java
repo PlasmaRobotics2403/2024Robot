@@ -73,15 +73,6 @@ public class StateManager {
 
     public void periodic() {
         logging();
-        if(photon.isAligned() && hasGamePiece) {
-            leds.setState(LEDState.ALLIGNED);
-        }
-        else if(hasGamePiece) {
-            leds.setState(LEDState.HASPEICE);
-        }
-        else if(!hasGamePiece) {
-            leds.setState(LEDState.NOPEICE);
-        }
 
         switch (currentState) {
             case IDLE:
