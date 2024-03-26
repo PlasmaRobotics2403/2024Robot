@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
@@ -73,7 +75,13 @@ public class StateManager {
 
     public void periodic() {
         logging();
-        if(photon.isAligned() && hasGamePiece) {
+        if(DriverStation.isDisabled()) {
+            do {
+                Timer.delay(.4);
+            }
+            while(!leds.BogoSort() || !DriverStation.isDisabled());
+        }
+        else if(photon.isAligned() && hasGamePiece) {
             leds.setState(LEDState.ALLIGNED);
         }
         else if(hasGamePiece) {
