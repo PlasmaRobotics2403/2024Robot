@@ -76,10 +76,7 @@ public class StateManager {
     public void periodic() {
         logging();
         if(DriverStation.isDisabled()) {
-            do {
-                Timer.delay(.4);
-            }
-            while(!leds.BogoSort() || !DriverStation.isDisabled());
+            leds.setState(LEDState.BOGO);
         }
         else if(photon.isAligned() && hasGamePiece) {
             leds.setState(LEDState.ALLIGNED);

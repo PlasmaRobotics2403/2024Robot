@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 public class LEDs {
     private AddressableLED LED   ;
     private AddressableLEDBuffer LEDBuffer;
+    private int bogoCycle;
     // Store what the last hue of the first pixel is
     private int firstPixelHue;
 
@@ -30,24 +31,24 @@ public class LEDs {
     }
 
     public enum bogo {
-        RED1(0,255, 128, 0b111111110000000000000000),
-        RED2(0, 153, 128, 0b11111111110010101100110),
-        RED3(0, 51, 128, 0b111111110011001100110011),
-        ORANGE1(36, 255, 128, 0b001001001111111111111111),
-        ORANGE2(30, 153, 128, 0b111111111011001001100110),
-        ORANGE3(29, 51, 128, 0b111111111110010111001100),
-        YELLOW1(60, 255, 128, 0b111111111111111100000000),
-        YELLOW2(60, 153, 128, 0b111111111111111101100110),
-        YELLOW3(60, 51, 128, 0b111111111111111111001100),
-        GREEN1(120, 255, 128, 0b000000001111111100000000),
-        GREEN2(120, 153, 128, 0b011001101111111101100110),
-        GREEN3(120, 51, 128, 0b110011001111111111001100),
-        BLUE1(240, 255, 128, 0b000000000000000011111111),
-        BLUE2(240, 153, 128, 0b011001100110011011111111);
+        RED1(0,255, 150, 1),
+        RED2(13, 255, 150, 2),
+        RED3(26, 255, 150, 3),
+        ORANGE1(39, 255, 150, 4),
+        ORANGE2(52, 255, 150, 5),
+        ORANGE3(65, 255, 150, 6),
+        YELLOW1(78, 255, 150, 7),
+        YELLOW2(91, 255, 150, 8),
+        YELLOW3(104, 255, 150, 9),
+        GREEN1(117, 255, 150, 10),
+        GREEN2(130, 255, 150, 11),
+        GREEN3(143, 255, 150, 12),
+        BLUE1(156, 255, 150, 13),
+        BLUE2(169, 255, 150, 14);
 
-        int h;
-        int s;
-        int v;
+        int h; // 0-180
+        int s; // 0-255
+        int v; // 0-255
         int sorting;
 
         private bogo (int h, int s, int v, int sorting) {
@@ -59,6 +60,7 @@ public class LEDs {
     }
 
     public enum LEDState {
+        BOGO,
         ALLIGNED,
         HASPEICE,
         NOPEICE;
@@ -77,7 +79,8 @@ public class LEDs {
         LED.setData(LEDBuffer);
         LED.start();
 
-        bogoArray = new bogo[]{bogo.RED1, 
+        bogoArray = new bogo[]{
+                    bogo.RED1, 
                     bogo.RED2, 
                     bogo.RED3,
                     bogo.ORANGE1,
@@ -92,6 +95,8 @@ public class LEDs {
                     bogo.BLUE1,
                     bogo.BLUE2};
         ShuffleArray(bogoArray);
+
+        bogoCycle = 0;
     }
 
     private void ShuffleArray(bogo[] ar) {
@@ -136,8 +141,12 @@ public class LEDs {
         }
 
         // apply array
-        for (int i = 0; i < getBufferLength(); i++) {
-            setHSV(i, bogoArray[i].h, bogoArray[i].s, bogoArray[i].v);
+        for (int i = 0; i < bogoArray.length; i++) {
+            setHSV(i*2, bogoArray[i].h, bogoArray[i].s, bogoArray[i].v);
+            
+            if (i < bogoArray.length-1) {
+                setHSV(i*2+1, bogoArray[i].h, bogoArray[i].s, bogoArray[i].v);
+            }
         }
 
         return isSorted;
@@ -236,6 +245,13 @@ public class LEDs {
 
     public void periodic() {
         switch (currentState) {
+            case BOGO:
+                bogoCycle++;
+                if(bogoCycle > 10) {
+                    BogoSort();
+                    bogoCycle = 0;
+                }
+                break;
             case ALLIGNED:
                 setHSV(Color.GREEN.h, Color.GREEN.s, Color.GREEN.v);
                 break;
