@@ -41,7 +41,8 @@ public class StateManager {
         CLIMB_HOOKS_DOWN,
         CLIMBFALSE,
         INDEXAUTO,
-        SHOOTAUTO
+        SHOOTAUTO,
+        FIXEDSHOOTAUTO
 
      }
     public StateManager(Intake intake, Shooter shooter, Index index, Climb climb, LEDs leds, Photon photon, Swerve swerve) {
@@ -219,10 +220,19 @@ public class StateManager {
                 hasGamePiece = false;
                 gamePieceInPos = false;
                 break;
+
+            case FIXEDSHOOTAUTO:
+                shooter.setState(shooterState.STATICSHOOTFRONT);
+                intake.setState(intakeState.STOW);
+                hasGamePiece = false;
+                gamePieceInPos = false;
+                break;
+
             case INDEXAUTO:
                 index.setState(indexState.SHOOT);
                 hasGamePiece = false;
                 gamePieceInPos = false;
+                break;
         }
     }
 }

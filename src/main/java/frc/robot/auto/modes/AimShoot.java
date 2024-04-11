@@ -16,13 +16,13 @@ import frc.robot.auto.actions.Wait;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Swerve;
 
-public class Shoot extends AutoMode {
+public class AimShoot extends AutoMode {
     private StateManager manager;
 	private String pathRed;
     private String pathBlue;
     private Photon photon;
 
-	public Shoot(StateManager manager, Photon photon) {
+	public AimShoot(StateManager manager, Photon photon) {
         this.manager = manager;
         this.photon = photon;
 
@@ -33,8 +33,10 @@ public class Shoot extends AutoMode {
 	@Override
 	protected void routine() throws AutoModeEndedException {
 		DriverStation.reportWarning("Starting Auto run", false);
-		runAction(new AutoRobotState(manager, robotState.SHOOT));
+		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
 		runAction(new Wait(1));
+        runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
+        runAction(new Wait(1));
 		runAction(new AutoRobotState(manager, robotState.IDLE));
 
 		DriverStation.reportWarning("Ending Auto run", false);

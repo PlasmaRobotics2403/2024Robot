@@ -16,8 +16,10 @@ import frc.lib.autoUtil.AutoMode;
 import frc.lib.autoUtil.AutoModeRunner;
 import frc.lib.controllers.PlasmaJoystick;
 import frc.robot.StateManager.robotState;
+import frc.robot.auto.modes.AimShoot;
 import frc.robot.auto.modes.DriveAndTurn;
 import frc.robot.auto.modes.DriveY;
+import frc.robot.auto.modes.FixedShoot;
 import frc.robot.auto.modes.FourNear;
 import frc.robot.auto.modes.DriveX;
 import frc.robot.auto.modes.Nothing;
@@ -107,11 +109,13 @@ public class Robot extends TimedRobot {
     autoModes[10] = new ThreeCenterFar(swerve, stateManager, photon);
     autoModes[11] = new ThreeCenterNear(swerve, stateManager, photon);
     autoModes[12] = new FourNear(swerve, stateManager, photon);
-    autoModes[13] = new Shoot(stateManager, photon);
-    
+    autoModes[13] = new FixedShoot(stateManager, photon);
+    autoModes[14] = new AimShoot(stateManager, photon);
+
 
     m_chooser.setDefaultOption("Nothing Auto", autoModes[0]); 
-    m_chooser.addOption("Shoot", autoModes[13]);
+    m_chooser.addOption("Shoot (1)", autoModes[13]);
+    m_chooser.addOption("Aim Shoot (1)", m_autoSelected);
     m_chooser.addOption("Middle Auto (2)", autoModes[5]);
     m_chooser.addOption("Far Auto (2)", autoModes[6]);
     m_chooser.addOption("Near Auto (2)", autoModes[7]);
