@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
@@ -77,17 +76,13 @@ public class StateManager {
 
         switch (currentState) {
             case IDLE:
-                if(DriverStation.isDisabled()) {
-                    leds.setState(LEDState.BOGO);
+                climb.setState(climbState.OFF);
+
+                if(climb.climbRaised()) {
+                    shooter.setState(shooterState.CLIMB);
                 }
-                else if(photon.isAligned() && hasGamePiece) {
-                    leds.setState(LEDState.ALLIGNED);
-                }
-                else if(hasGamePiece) {
-                    leds.setState(LEDState.HASPEICE);
-                }
-                else if(!hasGamePiece) {
-                    leds.setState(LEDState.NOPEICE);
+                else{
+                    shooter.setState(shooterState.OFF);
                 }
 
                 // game piece in position
