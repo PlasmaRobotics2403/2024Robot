@@ -236,6 +236,9 @@ public class Robot extends TimedRobot {
     else if(driver.dPad.getPOV() == 180) {
       stateManager.setState(robotState.CLIMB_HOOKS_DOWN);
     }
+    else if(driver.dPad.getPOV() == 90) {
+      stateManager.setState(robotState.TRAP);
+    }
     else if(driver.Y.isPressed()) {
       stateManager.setState(robotState.CLIMBFALSE);
     }

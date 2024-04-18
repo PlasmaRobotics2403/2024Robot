@@ -17,6 +17,7 @@ public class Shooter {
     private TalonFX shooterMotor2;
     private TalonFX rotMotor;
     private double testAngle;
+    private double testSpeed;
 
     private TalonFXConfiguration currentConfigs;
     private TalonFXConfiguration shooterRotConfigs;
@@ -30,7 +31,9 @@ public class Shooter {
         AMP,
         STATICSHOOTFRONT,
         STATICSHOOTBACK,
-        CLIMB
+        CLIMB,
+        TRAP
+    
     }
 
     /**
@@ -91,6 +94,7 @@ public class Shooter {
 
         currentState = shooterState.OFF;
         testAngle = 0;
+        testSpeed = 0;
     }
 
     private void runRPS(double rps) {
@@ -155,6 +159,11 @@ public class Shooter {
         return shooterVelocities;
     }
 
+    public boolean testReadyToShoot() {
+        DriverStation.reportWarning("Ready to shoot", false);
+        return readyToShoot(testSpeed, testAngle);
+    }
+    
     public boolean readyToShoot(double desiredRPM) {
         DriverStation.reportWarning("Ready to shoot", false);
         return readyToShoot(desiredRPM, photonAngle());
@@ -172,11 +181,29 @@ public class Shooter {
 
 
 
+    public boolean testReadyToShoot(double desiredRPM, double desiredAngle) {
+        double[] shooterVelocities = getShooterVel();
+        double angle = rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion;
+
+        DriverStation.reportWarning("shooter angle" + angle, false);
+        DriverStation.reportWarning("shooter rps" + shooterVelocities[0], false);
+
+        boolean velocitysGood = shooterVelocities[0] > desiredRPM && shooterVelocities[1] > desiredRPM;
+        boolean anlgeGood = (angle > desiredAngle-2 && angle < desiredAngle+2);
+
+        return velocitysGood && anlgeGood;
+    }
+
+
+
     private void logging() {
-        SmartDashboard.putNumber("Shooter Speed", shooterMotor1.get());
+        //SmartDashboard.putNumber("Shooter Speed", shooterMotor1.get());
         SmartDashboard.putNumber("Shooter Angle", rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion);
         testAngle = (Double) SmartDashboard.getNumber("Test Angle", 0.0);
         SmartDashboard.putNumber("Test Angle", testAngle);
+
+        testSpeed = (Double) SmartDashboard.getNumber("Test Speed", 0.0);
+        SmartDashboard.putNumber("Test Speed", testSpeed);
         SmartDashboard.putString("Shooter State", currentState.toString());
 
     }
@@ -220,6 +247,9 @@ public class Shooter {
                 runRPS(ShooterConstants.ampRPS);
                 runMotionMagicAngle(ShooterConstants.ampAngle);
                 break;
+            case TRAP:
+                runRPS(testAngle);
+                runMotionMagicAngle(testSpeed);   
         }
     }
 
