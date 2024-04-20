@@ -26,10 +26,15 @@ public class Photon {
     double calculatedAngle = 0.0;
     
     PIDController turnController = new PIDController(0.20, 0, 0.0156);
+    PIDController trapController = new PIDController(0.1, 0, 0);
 
     public Photon() {
         camera = new PhotonCamera("plasmacam");
         calculatedAngle = 0;
+    }
+
+    public double trapAllignForward() {
+        return -trapController.calculate(area, PhotonConstants.trapDitance);
     }
 
     /**
@@ -57,7 +62,7 @@ public class Photon {
 
     public boolean isAligned() {
             return yaw >= 2.5 && yaw <= 5.5;
-       }
+    }
 
 
     public void logging() {
@@ -85,7 +90,7 @@ public class Photon {
 
         for(PhotonTrackedTarget target : result.targets) {
             this.target = target;
-            if (target.getFiducialId() == 7 || target.getFiducialId() == 4) {
+            if (target.getFiducialId() == 7 || target.getFiducialId() == 4 || target.getFiducialId() == 11) {
                 yaw = target.getYaw();
                 pitch = target.getPitch();
                 area = target.getArea();

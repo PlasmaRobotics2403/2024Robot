@@ -142,6 +142,16 @@ public class StateManager {
                     gamePieceInPos = false;
                 }
                 break;
+            case TRAP:
+                shooter.setState(shooterState.TRAP);
+                intake.setState(intakeState.STOW);
+            
+                if(shooter.readyToShoot(Constants.ShooterConstants.trapRPS, Constants.ShooterConstants.trapAngle)) {
+                    index.setState(indexState.SHOOT);
+                    hasGamePiece = false;
+                    gamePieceInPos = false;
+                }
+                break;
             case INTAKE:
                 shooter.setState(shooterState.OFF);
 
@@ -225,16 +235,7 @@ public class StateManager {
                 hasGamePiece = false;
                 gamePieceInPos = false;
                 break;
-            case TRAP:
-                shooter.setState(shooterState.TRAP);
-                intake.setState(intakeState.STOW);
-            
-                if(shooter.testReadyToShoot()) {
-                    index.setState(indexState.SHOOT);
-                    hasGamePiece = false;
-                    gamePieceInPos = false;
-                }
-                break;
+
         }
     }
 }

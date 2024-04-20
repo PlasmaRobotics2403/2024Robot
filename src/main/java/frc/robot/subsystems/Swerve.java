@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.SwerveModule;
 import frc.robot.Constants;
+import frc.robot.subsystems.Shooter.shooterState;
 
 public class Swerve {
     private final int ModuleCount;
@@ -35,6 +36,12 @@ public class Swerve {
     private Field2d m_field;
     private PIDController m_turnPid;
     private Notifier m_telemetry;
+
+    public enum swerveState {
+        TRAP,
+        IDLE
+    }
+    public swerveState currentState;
 
     public Swerve(
             SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
@@ -67,6 +74,7 @@ public class Swerve {
 
         m_telemetry = new Notifier(this::logging);
         m_telemetry.startPeriodic(0.1); // Telemeterize every 100ms
+        currentState = swerveState.IDLE;
     }
 
     /* Put smartdashboard calls in separate thread to reduce performance impact */
@@ -228,6 +236,26 @@ public class Swerve {
 
     public void zeroHeading() {
         m_pigeon2.reset();
+    }
+
+    public void setState(swerveState state) {
+        currentState = state;
+    }
+
+    public swerveState getState() {
+        return currentState;
+    }
+
+    public void perodic() {
+        switch (currentState) {
+            case TRAP:
+                driveFieldCentric(new ChassisSpeeds(0, 0, 0));
+                break;
+        
+            case IDLE:
+                driveFieldCentric(new ChassisSpeeds(0, 0, 0));
+                break;
+        }
     }
 
 }

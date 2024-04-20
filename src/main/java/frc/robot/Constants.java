@@ -47,12 +47,14 @@ public class Constants {
         public static final int rotMotorID = 5;
         public static final double shooterRPS = 85;
         public static final double ampRPS = 4.5;
+        public static final double trapRPS = 35;
 
         //positions
         public static final double ampAngle = 103;
         public static final double climbPos = 103;
         public static final double staticFront = 37;
         public static final double staticBack = 100;
+        public static final double trapAngle = 36;
 
         public static final double angleConversion = (35.0/54); //angle to rotation 70*(100/30)/360
         public static final double rotationConversion = (360.0/70*(100/30)) /10;
@@ -102,6 +104,7 @@ public class Constants {
         public static final double pivotOffset = Units.inchesToMeters(12);
         public static final double pivotRestAngle = Units.inchesToMeters(27);
         public static final double goalHeight = Units.inchesToMeters(55);
+        public static final double trapDitance = Units.inchesToMeters(49);
         
     }
 

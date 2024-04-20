@@ -174,7 +174,7 @@ public class Shooter {
         double angle = rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion;
 
         boolean velocitysGood = shooterVelocities[0] > desiredRPM && shooterVelocities[1] > desiredRPM;
-        boolean anlgeGood = (angle > desiredAngle-2 && angle < desiredAngle+2);
+        boolean anlgeGood = (angle > desiredAngle-1 && angle < desiredAngle+1);
 
         return velocitysGood && anlgeGood;
     }
@@ -248,8 +248,8 @@ public class Shooter {
                 runMotionMagicAngle(ShooterConstants.ampAngle);
                 break;
             case TRAP:
-                runRPS(testAngle);
-                runMotionMagicAngle(testSpeed);   
+                runRPS(ShooterConstants.trapRPS);
+                runMotionMagicAngle(ShooterConstants.trapAngle);  
         }
     }
 
