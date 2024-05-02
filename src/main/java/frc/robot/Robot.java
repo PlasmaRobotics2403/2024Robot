@@ -198,14 +198,15 @@ public class Robot extends TimedRobot {
               -driver.LeftX.getFilteredAxis()*Constants.SwerveConstants.maxSpeed,
               photon.alignToTarget()));
     }
+    // allign to trap
     else if(driver.dPad.getPOV() == 270) {
       swerve.driveFieldCentric(
           new ChassisSpeeds(
-              photon.trapAllignForward(),
+              0,
               0,
               0));
     }
-    //normal drive
+    // normal drive
     else{
       swerve.driveFieldCentric(
           new ChassisSpeeds(
