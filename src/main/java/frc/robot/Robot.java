@@ -217,7 +217,6 @@ public class Robot extends TimedRobot {
 
     // reset heading
     if (driver.BACK.isPressed()) {
-
       swerve.zeroHeading();
     }
 

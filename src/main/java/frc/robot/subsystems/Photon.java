@@ -26,10 +26,13 @@ public class Photon {
     double skew = 0.0;
     double distance = 0.0;
     double y = 0.0;
+    double x = 0.0;
     double calculatedAngle = 0.0;
     
     PIDController turnController = new PIDController(0.20, 0, 0.0156);
     PIDController trapYController = new PIDController(0.5, 0, 0);
+    PIDController trapXController = new PIDController(0.2, 0, 0);
+
 
     public Photon() {
         camera = new PhotonCamera("plasmacam");
@@ -69,6 +72,7 @@ public class Photon {
             return turnController.calculate(yaw, 4);
         }
     }
+
     public double alignToTrapY() {
         /*return 0 if cant find target */
         if(!hasTarget) {
@@ -76,6 +80,16 @@ public class Photon {
         }
         else{
             return -trapYController.calculate(y, -0.39);
+        }
+    }
+
+    public double alignToTrapX() {
+        /*return 0 if cant find target */
+        if(!hasTarget) {
+            return 0;
+        }
+        else{
+            return -trapXController.calculate(y, -0.39);
         }
     }
 
@@ -115,10 +129,7 @@ public class Photon {
 
     public void periodic() {
         result = camera.getLatestResult();
-
         hasTarget = result.hasTargets();
-
-        
 
         for(PhotonTrackedTarget target : result.targets) {
             this.target = target;
@@ -130,6 +141,7 @@ public class Photon {
                 area = target.getArea();
                 skew = target.getSkew();
                 y = threeDTarget.getY();
+                x = threeDTarget.getX();
                 distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.PhotonConstants.camHeight, Constants.PhotonConstants.tagHeight, Constants.PhotonConstants.camPitch, Units.degreesToRadians(result.getBestTarget().getPitch()))+PhotonConstants.distanceOffset;
                 distance = Units.metersToInches(distance);
                 
@@ -144,6 +156,7 @@ public class Photon {
                 skew = -1;
                 distance = -1;
                 y = -1;
+                x = -1;
             }
         }
         logging();
