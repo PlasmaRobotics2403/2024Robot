@@ -46,6 +46,7 @@ public class Constants {
         public static final int ampMotorID = 4;
         public static final int rotMotorID = 5;
         public static final double shooterRPS = 85;
+        public static final double shuttleRPS = 50;
         public static final double ampRPS = 4.5;
         public static final double trapRPS = 35;
 

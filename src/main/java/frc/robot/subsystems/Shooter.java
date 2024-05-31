@@ -109,6 +109,7 @@ public class Shooter {
         //DriverStation.reportWarning(shooterMotor1.get, false);
     }
 
+
     private void runMotionMagicAngle(double pos) {
         if(pos>105||pos<0) {
             DriverStation.reportWarning("DONT DO THAT", true);
@@ -237,8 +238,8 @@ public class Shooter {
                 runMotionMagicAngle(ShooterConstants.staticFront);
                 break;
             case SHUTTLE:
-                runRPS(ShooterConstants.shooterRPS);
-                runMotionMagicAngle(0);
+                runRPS(ShooterConstants.shuttleRPS);
+                runMotionMagicAngle(30);
                 break;
             case PERCENT:
                 runShooter(ShooterConstants.shooterSpeed);

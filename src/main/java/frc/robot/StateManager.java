@@ -239,7 +239,7 @@ public class StateManager {
 
             case SHUTTLE:
                 shooter.setState(shooterState.SHUTTLE);
-                if(shooter.readyToShoot(Constants.ShooterConstants.shooterRPS*.9)) {
+                if(shooter.readyToShoot(Constants.ShooterConstants.shuttleRPS*.9, 30)) {
                     index.setState(indexState.SHOOT);
                     hasGamePiece = false;
                     gamePieceInPos = false;

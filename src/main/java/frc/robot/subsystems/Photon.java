@@ -27,6 +27,7 @@ public class Photon {
     double distance = 0.0;
     double y = 0.0;
     double x = 0.0;
+    double angleOffset = 0.0;
     double calculatedAngle = 0.0;
     
     PIDController turnController = new PIDController(0.20, 0, 0.0156);
@@ -142,9 +143,10 @@ public class Photon {
                 skew = target.getSkew();
                 y = threeDTarget.getY();
                 x = threeDTarget.getX();
+                angleOffset = Math.asin((Math.sin(skew)/Math.sqrt(Math.pow(skew, 2)+36-(12*distance*Math.cos(skew)))));
                 distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.PhotonConstants.camHeight, Constants.PhotonConstants.tagHeight, Constants.PhotonConstants.camPitch, Units.degreesToRadians(result.getBestTarget().getPitch()))+PhotonConstants.distanceOffset;
                 distance = Units.metersToInches(distance);
-                
+                DriverStation.reportWarning(String.valueOf(angleOffset), false);
                 
             }
             else if(target.getFiducialId() == 3 || target.getFiducialId() == 8){
