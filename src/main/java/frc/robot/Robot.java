@@ -199,13 +199,13 @@ public class Robot extends TimedRobot {
               photon.alignToTarget()));
     }
     // allign to trap
-    else if(driver.dPad.getPOV() == 270) {
+    /*else if(driver.dPad.getPOV() == 270) {
       swerve.driveFieldCentric(
           new ChassisSpeeds(
               0,
               0,
               0));
-    }
+    }*/
     // normal drive
     else{
       swerve.driveFieldCentric(
@@ -246,8 +246,11 @@ public class Robot extends TimedRobot {
     else if(driver.dPad.getPOV() == 90) {
       stateManager.setState(robotState.TRAP);
     }
-    else if(driver.Y.isPressed()) {
+    else if(driver.dPad.getPOV() == 270) {
       stateManager.setState(robotState.CLIMBFALSE);
+    }
+    else if(driver.Y.isPressed()){
+      stateManager.setState(robotState.SHUTTLE);
     }
     else{
       stateManager.setState(robotState.IDLE);

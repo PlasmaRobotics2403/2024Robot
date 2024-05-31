@@ -50,7 +50,7 @@ public class Constants {
         public static final double trapRPS = 35;
 
         //positions
-        public static final double ampAngle = 103;
+        public static final double ampAngle = 100;
         public static final double climbPos = 103;
         public static final double staticFront = 37;
         public static final double staticBack = 100;

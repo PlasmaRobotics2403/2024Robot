@@ -42,7 +42,8 @@ public class StateManager {
         CLIMBFALSE,
         INDEXAUTO,
         SHOOTAUTO,
-        TRAP
+        TRAP,
+        SHUTTLE
 
      }
     public StateManager(Intake intake, Shooter shooter, Index index, Climb climb, LEDs leds, Photon photon, Swerve swerve) {
@@ -236,6 +237,14 @@ public class StateManager {
                 gamePieceInPos = false;
                 break;
 
+            case SHUTTLE:
+                shooter.setState(shooterState.SHUTTLE);
+                if(shooter.readyToShoot(Constants.ShooterConstants.shooterRPS*.9)) {
+                    index.setState(indexState.SHOOT);
+                    hasGamePiece = false;
+                    gamePieceInPos = false;
+                }
         }
+
     }
 }

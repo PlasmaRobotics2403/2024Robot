@@ -30,6 +30,7 @@ public class Shooter {
         TEST,
         AMP,
         STATICSHOOTFRONT,
+        SHUTTLE,
         STATICSHOOTBACK,
         CLIMB,
         TRAP
@@ -234,6 +235,11 @@ public class Shooter {
             case STATICSHOOTFRONT:
                 runRPS(ShooterConstants.shooterRPS);
                 runMotionMagicAngle(ShooterConstants.staticFront);
+                break;
+            case SHUTTLE:
+                runRPS(ShooterConstants.shooterRPS);
+                runMotionMagicAngle(0);
+                break;
             case PERCENT:
                 runShooter(ShooterConstants.shooterSpeed);
                 break;

@@ -41,7 +41,7 @@ public class Photon {
 
     public double trapAllignY() {
         double pidTrapOutput = -trapYController.calculate(distance, PhotonConstants.trapDitance);
-        DriverStation.reportWarning(String.valueOf(pidTrapOutput), false);
+        //DriverStation.reportWarning(String.valueOf(pidTrapOutput), false);
         return pidTrapOutput;
     }
 
