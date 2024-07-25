@@ -1,13 +1,9 @@
 package frc.robot;
-
 import edu.wpi.first.math.util.Units;
-
 public class Constants {
-    
     public class IntakeConstants {
     
         public static final int rollerID = 1;
-
         public static final double rollerSpeed = 0.9;
         public static final int forwardChannelID = 0;
         public static final int backwardChannelID = 1;
@@ -21,9 +17,7 @@ public class Constants {
 
         public static final double passthroughSpeed = 0.9;
         public static final double indexSpeed = 0.15;
-
     }
-
     public class ClimbConstants {
     
         public static final int leftClimbMotorID = 9;
@@ -46,12 +40,16 @@ public class Constants {
         public static final int ampMotorID = 4;
         public static final int rotMotorID = 5;
         public static final double shooterRPS = 85;
+        public static final double shootAmpRPS = 19;
+        public static final double shootAmpOffset = 13;
         public static final double shuttleRPS = 50;
         public static final double ampRPS = 4.5;
         public static final double trapRPS = 35;
+        public static final double  testRPS = 30;
 
         //positions
         public static final double ampAngle = 100;
+        public static final double shootAmpAngle = 26;
         public static final double climbPos = 103;
         public static final double staticFront = 37;
         public static final double staticBack = 100;
@@ -59,6 +57,7 @@ public class Constants {
 
         public static final double angleConversion = (35.0/54); //angle to rotation 70*(100/30)/360
         public static final double rotationConversion = (360.0/70*(100/30)) /10;
+
         //pid
         public static final double shooterPivotKS = 0.25;
         public static final double shooterPivotKV = 0.12;

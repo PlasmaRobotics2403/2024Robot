@@ -235,7 +235,8 @@ public class Robot extends TimedRobot {
       stateManager.setState(robotState.INTAKE);
     }
     else if(driver.A.isPressed()) {
-      stateManager.setState(robotState.AMP);
+      stateManager.setState(robotState.SHOOTAMP);
+      //stateManager.setState(robotState.AMP);
     }
     else if(driver.dPad.getPOV() == 0) {
       stateManager.setState(robotState.CLIMB_HOOKS_UP);

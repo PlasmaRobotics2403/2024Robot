@@ -29,11 +29,13 @@ public class Shooter {
         PERCENT,
         TEST,
         AMP,
+        TESTAMP,
         STATICSHOOTFRONT,
         SHUTTLE,
         STATICSHOOTBACK,
         CLIMB,
-        TRAP
+        TRAP,
+        SHOOTAMP
     
     }
 
@@ -108,6 +110,18 @@ public class Shooter {
 
         //DriverStation.reportWarning(shooterMotor1.get, false);
     }
+        
+    private void shootAmp(double rps) {
+        final MotionMagicVelocityVoltage r_request = new MotionMagicVelocityVoltage(0);
+        r_request.Acceleration = 0;
+        r_request.EnableFOC = true;
+
+        shooterMotor2.setControl(r_request.withVelocity(rps));
+        shooterMotor1.setControl(r_request.withVelocity(0));
+        //shooterMotor1.setControl(r_request.withVelocity(rps-ShooterConstants.shootAmpOffset));
+
+        //DriverStation.reportWarning(shooterMotor1.get, false);
+    }
 
 
     private void runMotionMagicAngle(double pos) {
@@ -175,7 +189,8 @@ public class Shooter {
         double[] shooterVelocities = getShooterVel();
         double angle = rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion;
 
-        boolean velocitysGood = shooterVelocities[0] > desiredRPM && shooterVelocities[1] > desiredRPM;
+        boolean velocitysGood = shooterVelocities[1] > desiredRPM;
+        //boolean velocitysGood = shooterVelocities[0] > desiredRPM && shooterVelocities[1] > desiredRPM;
         boolean anlgeGood = (angle > desiredAngle-1 && angle < desiredAngle+1);
 
         return velocitysGood && anlgeGood;
@@ -185,7 +200,9 @@ public class Shooter {
 
     public boolean testReadyToShoot(double desiredRPM, double desiredAngle) {
         double[] shooterVelocities = getShooterVel();
-        double angle = rotMotor.getRotorPosition().getValueAsDouble()*ShooterConstants.rotationConversion;
+        double angle = rotMotor.getRotorPosition(
+
+        ).getValueAsDouble()*ShooterConstants.rotationConversion;
 
         DriverStation.reportWarning("shooter angle" + angle, false);
         DriverStation.reportWarning("shooter rps" + shooterVelocities[0], false);
@@ -238,8 +255,8 @@ public class Shooter {
                 runMotionMagicAngle(ShooterConstants.staticFront);
                 break;
             case SHUTTLE:
-                runRPS(ShooterConstants.shuttleRPS);
-                runMotionMagicAngle(30);
+                runRPS(ShooterConstants.shooterRPS);
+                runMotionMagicAngle(33);
                 break;
             case PERCENT:
                 runShooter(ShooterConstants.shooterSpeed);
@@ -250,13 +267,24 @@ public class Shooter {
                 runMotionMagicAngle(testAngle);
                 break;
 
+            case TESTAMP:
+                runMotionMagicAngle(40);
+                break;
+
             case AMP:
                 runRPS(ShooterConstants.ampRPS);
                 runMotionMagicAngle(ShooterConstants.ampAngle);
                 break;
+
+            case SHOOTAMP:
+                shootAmp(ShooterConstants.shootAmpRPS);
+                runMotionMagicAngle(ShooterConstants.shootAmpAngle);
+                break;
+
             case TRAP:
                 runRPS(ShooterConstants.trapRPS);
                 runMotionMagicAngle(ShooterConstants.trapAngle);  
+                break;
         }
     }
 

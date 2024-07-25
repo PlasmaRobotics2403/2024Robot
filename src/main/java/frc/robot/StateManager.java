@@ -36,6 +36,8 @@ public class StateManager {
         SHOOT,
         EJECT,
         AMP,
+        SHOOTAMP,
+        TESTAMP,
         STATICSHOOT,
         CLIMB_HOOKS_UP,
         CLIMB_HOOKS_DOWN,
@@ -191,10 +193,21 @@ public class StateManager {
                 shooter.setState(shooterState.RPS);
                 intake.setState(intakeState.STOW);
             
-                if(shooter.readyToShoot(Constants.ShooterConstants.shooterRPS*.9)) {
+                if(shooter.readyToShoot(Constants.ShooterConstants.shooterRPS*0.90)) {
                     index.setState(indexState.SHOOT);
                     hasGamePiece = false;
                     gamePieceInPos = false;
+                }
+                break;
+            case SHOOTAMP:
+                shooter.setState(shooterState.SHOOTAMP);
+                intake.setState(intakeState.STOW);
+
+                if(shooter.readyToShoot(Constants.ShooterConstants.shootAmpRPS, Constants.ShooterConstants.shootAmpAngle)) {
+                    index.setState(indexState.SHOOT);
+                    hasGamePiece = false;
+                    gamePieceInPos = false;
+
                 }
                 break;
             case AMP:
@@ -239,11 +252,16 @@ public class StateManager {
 
             case SHUTTLE:
                 shooter.setState(shooterState.SHUTTLE);
-                if(shooter.readyToShoot(Constants.ShooterConstants.shuttleRPS*.9, 30)) {
+                if(shooter.readyToShoot(Constants.ShooterConstants.testRPS*.9, 33)) {
                     index.setState(indexState.SHOOT);
                     hasGamePiece = false;
                     gamePieceInPos = false;
                 }
+                break;
+
+            case TESTAMP:
+                shooter.setState(shooterState.TESTAMP);
+                break;
         }
 
     }
