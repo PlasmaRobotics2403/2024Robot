@@ -35,6 +35,7 @@ public class Shooter {
         STATICSHOOTBACK,
         CLIMB,
         TRAP,
+        AUTO,
         SHOOTAMP
     
     }
@@ -176,12 +177,10 @@ public class Shooter {
     }
 
     public boolean testReadyToShoot() {
-        DriverStation.reportWarning("Ready to shoot", false);
         return readyToShoot(testSpeed, testAngle);
     }
     
     public boolean readyToShoot(double desiredRPM) {
-        DriverStation.reportWarning("Ready to shoot", false);
         return readyToShoot(desiredRPM, photonAngle());
     }
 
@@ -203,9 +202,6 @@ public class Shooter {
         double angle = rotMotor.getRotorPosition(
 
         ).getValueAsDouble()*ShooterConstants.rotationConversion;
-
-        DriverStation.reportWarning("shooter angle" + angle, false);
-        DriverStation.reportWarning("shooter rps" + shooterVelocities[0], false);
 
         boolean velocitysGood = shooterVelocities[0] > desiredRPM && shooterVelocities[1] > desiredRPM;
         boolean anlgeGood = (angle > desiredAngle-2 && angle < desiredAngle+2);
@@ -245,7 +241,11 @@ public class Shooter {
                 runRPS(ShooterConstants.shooterRPS);
                 runMotionMagicAngle(photonAngle());
                 break;
-                
+               
+            case AUTO:
+                runRPS(ShooterConstants.shooterRPS);
+                runMotionMagicAngle(photonAngle());
+                break;
             case STATICSHOOTBACK:
                 runRPS(ShooterConstants.shooterRPS);
                 runMotionMagicAngle(ShooterConstants.staticBack);
@@ -255,8 +255,8 @@ public class Shooter {
                 runMotionMagicAngle(ShooterConstants.staticFront);
                 break;
             case SHUTTLE:
-                runRPS(ShooterConstants.shooterRPS);
-                runMotionMagicAngle(33);
+                runRPS(ShooterConstants.shuttleRPS);
+                runMotionMagicAngle(ShooterConstants.shuttleAngle);
                 break;
             case PERCENT:
                 runShooter(ShooterConstants.shooterSpeed);

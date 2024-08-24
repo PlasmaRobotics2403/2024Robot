@@ -42,10 +42,10 @@ public class Constants {
         public static final double shooterRPS = 85;
         public static final double shootAmpRPS = 19;
         public static final double shootAmpOffset = 13;
-        public static final double shuttleRPS = 50;
+        public static final double shuttleRPS = 50;// 50
         public static final double ampRPS = 4.5;
         public static final double trapRPS = 35;
-        public static final double  testRPS = 30;
+        public static final double  testRPS = 45;
 
         //positions
         public static final double ampAngle = 100;
@@ -54,6 +54,7 @@ public class Constants {
         public static final double staticFront = 37;
         public static final double staticBack = 100;
         public static final double trapAngle = 36;
+        public static final double shuttleAngle = 33;
 
         public static final double angleConversion = (35.0/54); //angle to rotation 70*(100/30)/360
         public static final double rotationConversion = (360.0/70*(100/30)) /10;

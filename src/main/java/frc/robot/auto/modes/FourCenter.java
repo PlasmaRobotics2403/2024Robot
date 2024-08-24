@@ -16,7 +16,7 @@ import frc.robot.auto.actions.Wait;
 import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.Swerve;
 
-public class FourNear extends AutoMode {
+public class FourCenter extends AutoMode {
     private Swerve swerve;
     private StateManager manager;
 	private String pathRed1;
@@ -27,16 +27,16 @@ public class FourNear extends AutoMode {
     private String pathBlue3;
     private Photon photon;
 
-	public FourNear(Swerve swerve, StateManager manager, Photon photon) {
+	public FourCenter(Swerve swerve, StateManager manager, Photon photon) {
 		this.swerve = swerve;
         this.manager = manager;
         this.photon = photon;
 
-		pathBlue1 = "FourNearBlue1";
+		pathBlue1 = "FourCenterBlue1";
         pathRed1 = "FourNearRed1";
-        pathBlue2 = "FourNearBlue2";
+        pathBlue2 = "FourCenterBlue2";
         pathRed2 = "FourNearRed2";
-        pathBlue3 = "FourNearBlue3";
+        pathBlue3 = "FourCenterBlue3";
         pathRed3 = "FourNearRed3";
 	}
 

@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
@@ -239,7 +240,7 @@ public class StateManager {
                 climb.setState(climbState.CLIMBFALSE);
                 break;
             case SHOOTAUTO:
-                shooter.setState(shooterState.RPS);
+                shooter.setState(shooterState.AUTO);
                 intake.setState(intakeState.STOW);
                 hasGamePiece = false;
                 gamePieceInPos = false;
@@ -252,7 +253,7 @@ public class StateManager {
 
             case SHUTTLE:
                 shooter.setState(shooterState.SHUTTLE);
-                if(shooter.readyToShoot(Constants.ShooterConstants.testRPS*.9, 33)) {
+                if(shooter.readyToShoot(Constants.ShooterConstants.shuttleRPS*.9, ShooterConstants.shuttleAngle)) {
                     index.setState(indexState.SHOOT);
                     hasGamePiece = false;
                     gamePieceInPos = false;

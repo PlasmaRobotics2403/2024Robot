@@ -114,7 +114,6 @@ public class Photon {
             
             if(hasTarget) {
                 SmartDashboard.putNumber("Target ID", target.getFiducialId());
-                DriverStation.reportWarning(String.valueOf(alignToTrapY()), false);
 
                 SmartDashboard.putNumber("camYaw", yaw);
                 SmartDashboard.putNumber("camPitch", pitch);
@@ -146,7 +145,6 @@ public class Photon {
                 angleOffset = Math.asin((Math.sin(skew)/Math.sqrt(Math.pow(skew, 2)+36-(12*distance*Math.cos(skew)))));
                 distance = PhotonUtils.calculateDistanceToTargetMeters(Constants.PhotonConstants.camHeight, Constants.PhotonConstants.tagHeight, Constants.PhotonConstants.camPitch, Units.degreesToRadians(result.getBestTarget().getPitch()))+PhotonConstants.distanceOffset;
                 distance = Units.metersToInches(distance);
-                DriverStation.reportWarning(String.valueOf(angleOffset), false);
                 
             }
             else if(target.getFiducialId() == 3 || target.getFiducialId() == 8){
