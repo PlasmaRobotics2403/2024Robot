@@ -70,7 +70,7 @@ public class Photon {
             return 0;
         }
         else{
-            return turnController.calculate(yaw, 4);
+            return turnController.calculate(yaw, 10); // 4
         }
     }
 
@@ -105,7 +105,7 @@ public class Photon {
     }
 
     public boolean isAligned() {
-            return yaw >= 2.5 && yaw <= 5.5;
+            return yaw >=  9 && yaw <= 12;
     }
 
 

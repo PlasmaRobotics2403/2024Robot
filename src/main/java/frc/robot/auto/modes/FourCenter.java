@@ -33,11 +33,11 @@ public class FourCenter extends AutoMode {
         this.photon = photon;
 
 		pathBlue1 = "FourCenterBlue1";
-        pathRed1 = "FourNearRed1";
+        pathRed1 = "FourCenterRed1";
         pathBlue2 = "FourCenterBlue2";
-        pathRed2 = "FourNearRed2";
+        pathRed2 = "FourCenterRed2";
         pathBlue3 = "FourCenterBlue3";
-        pathRed3 = "FourNearRed3";
+        pathRed3 = "FourCenterRed3";
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class FourCenter extends AutoMode {
 		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
         runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
-        //runAction(new Wait(0.5));
+        runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
         runAction(new FollowTrejectory(selectedPath1, swerve));
         //runAction(new Wait(0.5));
@@ -73,7 +73,7 @@ public class FourCenter extends AutoMode {
 		runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
         runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
-        //runAction(new Wait(0.5));
+        runAction(new Wait(0.5));
         //runAction(new AutoAllign(swerve, photon));
         //runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
@@ -83,7 +83,7 @@ public class FourCenter extends AutoMode {
         runAction(new AutoRobotState(manager, robotState.SHOOTAUTO));
         runAction(new Wait(0.75));
         runAction(new AutoRobotState(manager, robotState.INDEXAUTO));
-        //runAction(new Wait(0.5));
+        runAction(new Wait(0.5));
         runAction(new AutoRobotState(manager, robotState.INTAKE));
         //runAction(new Wait(0.5));
         runAction(new FollowTrejectory(selectedPath3, swerve));

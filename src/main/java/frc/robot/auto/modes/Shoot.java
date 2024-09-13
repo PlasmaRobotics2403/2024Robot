@@ -1,20 +1,13 @@
 package frc.robot.auto.modes;
 
-import java.sql.DriverAction;
-import java.util.Optional;
-
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.lib.autoUtil.AutoMode;
 import frc.lib.autoUtil.AutoModeEndedException;
 import frc.robot.StateManager;
 import frc.robot.StateManager.robotState;
-import frc.robot.auto.actions.AutoAllign;
 import frc.robot.auto.actions.AutoRobotState;
-import frc.robot.auto.actions.FollowTrejectory;
 import frc.robot.auto.actions.Wait;
 import frc.robot.subsystems.Photon;
-import frc.robot.subsystems.Swerve;
 
 public class Shoot extends AutoMode {
     private StateManager manager;

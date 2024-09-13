@@ -196,7 +196,6 @@ public class Shooter {
     }
 
 
-
     public boolean testReadyToShoot(double desiredRPM, double desiredAngle) {
         double[] shooterVelocities = getShooterVel();
         double angle = rotMotor.getRotorPosition(
